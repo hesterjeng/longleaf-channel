@@ -57,6 +57,3 @@ for running 'npm install' and 'npm start' in the React directory.")
      "Pre-built React dashboard for Longleaf trading platform. Contains
 static HTML, CSS, and JavaScript files ready for serving.")
     (license license:gpl3+)))
-
-;; Default export for development
-longleaf-frontend-dev
