@@ -16,48 +16,8 @@
              (gnu packages finance)
              (gnu packages libffi))
 
-;; Load updated ctypes package
-(load "ocaml-ctypes.scm")
-
-;; Define tacaml package
-(define-public tacaml
-  (package
-   (name "tacaml")
-   (version "0.1.0")
-   (source (local-file "../tacaml" "tacaml-checkout"
-                       #:recursive? #t
-                       #:select? (git-predicate "../tacaml")))
-   (build-system dune-build-system)
-   (arguments
-    `(#:test-target "."))
-   (native-inputs
-    (list ocaml-odoc))
-   (propagated-inputs
-    (list ocaml
-          dune
-          ocaml-ctypes-latest
-          ocaml-ppx-deriving
-          ocaml-ppx-hash
-          ta-lib
-          pkg-config))
-   (home-page "https://github.com/hesterjeng/tacaml")
-   (synopsis "OCaml bindings for TA-Lib technical analysis library")
-   (description
-    "tacaml provides OCaml bindings to the TA-Lib (Technical Analysis Library).
-This project offers both raw C bindings and higher-level, type-safe wrappers
-for over 160 technical analysis functions commonly used in financial markets.
-Features include comprehensive bindings, type safety with GADTs, efficient
-data handling with Bigarray integration, modular design, and robust error
-handling with Result types.")
-   (license license:gpl3+)))
-
-;; Load React frontend package
-(load "longleaf-frontend.scm")
-
-;; Load QuantStats server package
-(load "longleaf-quantstats.scm")
-
 ;; Full Longleaf package with all dependencies
+(define-public ocaml-longleaf
 (package
  (name "longleaf")
  (version "1.0.3")
@@ -88,9 +48,9 @@ handling with Result types.")
         ocaml-tyxml
         ocaml-alcotest
         ;; Frontend
-        longleaf-frontend-dev
+        ;; longleaf-frontend-dev
         ;; Analytics server
-        longleaf-quantstats-dev))
+        ;; longleaf-quantstats-dev))
  (home-page "https://github.com/hesterjeng/longleaf")
  (synopsis "Algorithmic trading platform written in OCaml")
  (description
@@ -101,3 +61,4 @@ as functors for maximum code reuse and type safety.
 
 The platform includes tacaml for TA-Lib technical analysis bindings.")
  (license license:gpl3+))
+)
