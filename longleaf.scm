@@ -52,10 +52,10 @@ handling with Result types.")
    (license license:gpl3+)))
 
 ;; Load React frontend package
-(load "react/longleaf-frontend.scm")
+(load "longleaf-frontend.scm")
 
 ;; Load QuantStats server package
-(load "tearsheets/longleaf-quantstats.scm")
+(load "longleaf-quantstats.scm")
 
 ;; Full Longleaf package with all dependencies
 (package
