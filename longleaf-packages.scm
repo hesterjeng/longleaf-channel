@@ -34,18 +34,31 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages databases))
 
+(define* (github-tag-origin name home-page version hash tag-prefix)
+  "Create an origin for a GitHub repository using a version tag.
+TAG-PREFIX is appended before the version to easily allow the same function
+to be used for other repos."
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url (string-append home-page ".git"))
+          (commit (string-append tag-prefix version))))
+    (file-name (git-file-name name version))
+    (sha256
+     (base32
+      hash))))
 ;;; OCaml Packages
 
 ;; tacaml - OCaml bindings for TA-Lib
 (define-public tacaml
 (package
  (name "ocaml-tacaml")
- (version "1.0.1")
+ (version "cohttp")
  (source (github-tag-origin "tacaml"
                             "https://github.com/hesterjeng/tacaml"
                             version
                             "0000000000000000000000000000000000000000000000000000"
-                            "v"))
+                            ""))
  (build-system dune-build-system)
  (arguments
   `(#:test-target "."))
