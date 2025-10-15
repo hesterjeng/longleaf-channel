@@ -57,7 +57,7 @@ to be used for other repos."
  (source (github-tag-origin "tacaml"
                             "https://github.com/hesterjeng/tacaml"
                             version
-                            "0000000000000000000000000000000000000000000000000000"
+			    "0xvgy43yqrfd85c6dpyffff5dqj6idvcxcv5gn6argcai145cwr1"
                             "v"))
  (build-system dune-build-system)
  (arguments
