@@ -53,12 +53,12 @@ to be used for other repos."
 (define-public tacaml
 (package
  (name "ocaml-tacaml")
- (version "v1.0.1")
+ (version "1.0.1")
  (source (github-tag-origin "tacaml"
                             "https://github.com/hesterjeng/tacaml"
                             version
                             "0000000000000000000000000000000000000000000000000000"
-                            ""))
+                            "v"))
  (build-system dune-build-system)
  (arguments
   `(#:test-target "."))
