@@ -1,5 +1,5 @@
 ;; Longleaf Channel - All Package Definitions
-(define-module (longleaf)
+(define-module (gnu packages longleaf)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -32,7 +32,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages databases)
-  #:use-module (ocaml))
+  #:use-module (gnu packages ocaml))
 
 (define* (github-tag-origin name home-page version hash tag-prefix)
   "Create an origin for a GitHub repository using a version tag.
