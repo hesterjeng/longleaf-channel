@@ -41,6 +41,11 @@
 (package
  (name "ocaml-tacaml")
  (version "1.0.1")
+ (source (github-tag-origin "tacaml"
+                            "https://github.com/hesterjeng/tacaml"
+                            version
+                            "0000000000000000000000000000000000000000000000000000"
+                            "v"))
  (build-system dune-build-system)
  (arguments
   `(#:test-target "."))
@@ -70,6 +75,16 @@ handling with Result types.")
 (package
  (name "longleaf")
  (version "1.0.3")
+ (source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/hesterjeng/longleaf.git")
+          (commit "1c92a0e9008ae415e6fec86ac90d3fcc10e1e2d3")))
+    (file-name (git-file-name name version))
+    (sha256
+     (base32
+      "0000000000000000000000000000000000000000000000000000"))))
  (build-system dune-build-system)
  ;; (arguments
  ;;  `(#:package "longleaf-lib,longleaf-strategies"
