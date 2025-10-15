@@ -2546,6 +2546,8 @@ full_split, cut, rcut, etc..")
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; require odoc
+       #:ocaml ,ocaml-5.3
+       #:findlib ,ocaml-findlib
        #:make-flags ,#~(list "release"
                              (string-append "PREFIX=" #$output)
                              (string-append "LIBDIR=" #$output
@@ -2557,6 +2559,7 @@ full_split, cut, rcut, etc..")
              (mkdir-p "src/dune")
              (invoke "./configure")
              #t)))))
+    (native-inputs (list ocaml-5.3))
     (home-page "https://github.com/ocaml/dune")
     (synopsis "OCaml build system")
     (description "Dune is a build system for OCaml.  It provides a consistent
@@ -3030,7 +3033,7 @@ and RFC 3339 formats in OCaml.")
        (sha256
         (base32 "0z2873mj3i6h9cg8zlkipcjab8jympa4c4avhk4l04755qzphkds"))))
     (build-system dune-build-system)
-    (propagated-inputs (list ocaml-base ocaml-mdx ocaml-menhir ocaml-iso8601))
+    (propagated-inputs (list ocaml-base  ocaml-menhir ocaml-iso8601))
     (synopsis "TOML library for OCaml")
     (description
      "This package provides an OCaml library for interacting with files
@@ -3651,7 +3654,7 @@ syntactic tools.")
     (native-inputs (list ocaml-fmt
                          ocaml-sexplib
                          ocaml-logs
-                         ocaml-mdx
+                         
                          ocaml-alcotest
                          ocaml-crowbar
                          ocaml-junit-alcotest
@@ -3682,7 +3685,7 @@ layer.")
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-ppxlib ocaml-ppx-deriving ocaml-yaml
                             ))
-    (native-inputs (list ocaml-alcotest ocaml-bos ocaml-mdx ocaml-ezjsonm))
+    (native-inputs (list ocaml-alcotest ocaml-bos  ocaml-ezjsonm))
     (properties `((upstream-name . "ppx_deriving_yaml")))
     (synopsis "Yaml PPX Deriver")
     (description
@@ -4042,7 +4045,7 @@ to which allows adding and looking up bindings in a type safe manner.")
       "05jvz6vphjp229ap24xakxqgw3xymqff80q08pfnh5vr2lyb0hxm" "v"
       ))
     (build-system dune-build-system)
-    (propagated-inputs (list ocaml-mdx ocaml-ounit2 ocaml-qcheck))
+    (propagated-inputs (list  ocaml-ounit2 ocaml-qcheck))
       (synopsis "Clean and efficient loop fusion for all your iterating needs!")
       (description
        "Iter is a simple abstraction over iter functions intended to iterate efficiently on collections while performing some transformations. Common operations supported by Iter include filter, map, take, drop, append, flat_map, etc. Iter is not designed to be as general-purpose or flexible as Seq. Rather, it aims at providing a very simple and efficient way of iterating on a finite number of values, only allocating (most of the time) one intermediate closure to do so. For instance, iterating on keys, or values, of a Hashtbl.t, without creating a list. Similarly, the code above is turned into a single optimized for loop with flambda."
@@ -4586,7 +4589,7 @@ synchronous operations.")
                              ocaml-tls
                              ocaml-uri
                              ocaml-x509))
-    (native-inputs (list ocaml-alcotest ocaml-cmdliner ocaml-mdx ocaml-re postgresql))
+    (native-inputs (list ocaml-alcotest ocaml-cmdliner  ocaml-re postgresql))
     (home-page "https://github.com/paurkedal/ocaml-caqti/")
     (synopsis "Unified interface to relational database libraries")
     (description
@@ -6100,7 +6103,7 @@ A library that needs to suspend and later resume the current thread of execution
     (native-inputs (list ocaml-astring
                          ocaml-crowbar
                          ocaml-alcotest
-                         ocaml-mdx))
+                         ))
     (synopsis "Effect-based direct-style IO API for OCaml")
     (description "This package provides an effect-based IO API for multicore
 OCaml with fibers.")
@@ -6112,7 +6115,7 @@ OCaml with fibers.")
 ;;     (name "ocaml-eio-luv")
 ;;     (arguments `(#:package "eio-luv"))
 ;;     (propagated-inputs (list ocaml-eio ocaml-luv))
-;;     (native-inputs (list ocaml-mdx))
+;;     (native-inputs (list ))
 ;;     (synopsis "Libuv-based backend for Ocaml Eio")
 ;;     (description "@code{Eio_luv} provides a cross-platform backend for
 ;; @code{Ocaml Eio}'s APIs using luv (libuv)")))
@@ -6172,7 +6175,7 @@ accesses to the store.")
            ocaml-bechamel
            ocaml-logs
            ocaml-cmdliner
-           ocaml-mdx))
+           ))
     (synopsis "OCaml bindings for Linux io_uring")
     (description "This package provides OCaml bindings to the Linux
 @code{io_uring} kernel IO interfaces.")
@@ -6192,9 +6195,9 @@ accesses to the store.")
            ocaml-logs
            ocaml-fmt))
     (native-inputs
-     (list ocaml-mdx
+     (list 
            ocaml-alcotest
-           ocaml-mdx))
+           ))
     (synopsis "Linux backend for ocaml-eio")
     (description "@code{Eio_linux} provides a Linux io-uring backend for
 @code{Ocaml Eio} APIs, plus a low-level API that can be used directly
@@ -6214,8 +6217,8 @@ accesses to the store.")
      (list ocaml-eio
            ;; ocaml-eio-luv
            ocaml-eio-linux))
-    (native-inputs
-     (list ocaml-mdx))
+    ;; (native-inputs
+    ;;  (list ocaml-mdx))
     (synopsis "Eio backend selector")
     (description "@code{Eio_main} selects an appropriate backend (e.g.
 @samp{eio_linux} or @samp{eio_luv}), depending on your platform.")))
@@ -9519,7 +9522,7 @@ interfaces and the standard higher-level merlin protocol.")
     (native-inputs
      (list ocaml-dot-merlin-reader ; required for tests
            ocaml-ppxlib
-           ocaml-mdx
+           
            jq))
     (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
     (description "Merlin is an editor service that provides modern IDE
@@ -9547,7 +9550,7 @@ Atom.")
      (native-inputs
       (list ocaml-dot-merlin-reader     ; required for tests
             ocaml-ppxlib
-            ocaml-mdx
+            
             jq))
      (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
      (description "Merlin is an editor service that provides modern IDE
@@ -9898,7 +9901,7 @@ See ocaml_intrinsics for details. Unlike ocaml_intrinsics, ocaml_intrinsics_kern
 (define-public ocaml-compiler-libs
   (package
     (name "ocaml-compiler-libs")
-    (version "0.17")
+    (version "0.17.0")
     (home-page "https://github.com/janestreet/ocaml-compiler-libs")
     (source
      (origin
@@ -9911,7 +9914,10 @@ See ocaml_intrinsics for details. Unlike ocaml_intrinsics, ocaml_intrinsics_kern
         (base32
          "0cs3waqdnf5xv5cv5g2bkjypgqibwlxgkxd5ddmvj5g9d82vm821"))))
     (build-system dune-build-system)
-    (arguments `(#:tests? #f)) ;no tests
+    (arguments `(#:tests? #f
+                 #:ocaml ,ocaml
+                 #:findlib ,ocaml-findlib)) ;no tests
+    (native-inputs (list ocaml))
     (properties `((upstream-name . "ocaml-compiler-libs")))
     (synopsis "Compiler libraries repackaged")
     (description "This package simply repackages the OCaml compiler libraries

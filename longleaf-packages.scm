@@ -12,7 +12,6 @@
   #:use-module (guix build utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
-  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages compression)
@@ -32,7 +31,8 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages python-crypto)
-  #:use-module (gnu packages databases))
+  #:use-module (gnu packages databases)
+  #:use-module (ocaml))
 
 (define* (github-tag-origin name home-page version hash tag-prefix)
   "Create an origin for a GitHub repository using a version tag.
@@ -53,7 +53,7 @@ to be used for other repos."
 (define-public tacaml
 (package
  (name "ocaml-tacaml")
- (version "cohttp")
+ (version "1.0.1")
  (source (github-tag-origin "tacaml"
                             "https://github.com/hesterjeng/tacaml"
                             version
@@ -87,23 +87,22 @@ handling with Result types.")
 (define-public longleaf
 (package
  (name "longleaf")
- (version "1.0.3")
+ (version "cohttp")
  (source
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/hesterjeng/longleaf.git")
-          (commit "1c92a0e9008ae415e6fec86ac90d3fcc10e1e2d3")))
+          (commit "cohttp")))
     (file-name (git-file-name name version))
     (sha256
-     (base32
-      "0000000000000000000000000000000000000000000000000000"))))
+     (base32 "1ckg348c95la77xpnj3lp35g4pwbb7kfrl7k379wgs0ajw6cc1ap"
+	     ))))
  (build-system dune-build-system)
  (native-inputs
   (list ocaml-alcotest ocaml-odoc))
  (propagated-inputs
-  (list ocaml
-        dune
+  (list
         ocaml-ptime
         ocaml-ppx-yojson-conv-lib
         ocaml-ppx-deriving
