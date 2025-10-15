@@ -114,7 +114,7 @@ handling with Result types.")
         ocaml-ppx-fields-conv
         ocaml-cmdliner
         ocaml-graph
-        ocaml5.0-eio-main
+        ocaml-eio-main
         tacaml
         ocaml-fileutils
         ocaml-yojson

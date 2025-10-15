@@ -49,7 +49,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu packages ocaml)
+(define-module (ocaml)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -6203,7 +6203,7 @@ accesses to the store.")
 (define-public ocaml5.0-eio-linux
   (package-with-ocaml5.0 ocaml-eio-linux))
 
-(define ocaml-eio-main
+(define-public ocaml-eio-main
   (package
     (inherit ocaml-eio)
     (name "ocaml-eio-main")
