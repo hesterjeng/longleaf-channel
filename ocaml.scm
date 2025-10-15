@@ -6200,8 +6200,8 @@ accesses to the store.")
 @code{Ocaml Eio} APIs, plus a low-level API that can be used directly
 (in non-portable code).")))
 
-(define-public ocaml5.0-eio-linux
-  (package-with-ocaml5.0 ocaml-eio-linux))
+;; (define-public ocaml5.0-eio-linux
+;;   (package-with-ocaml5.0 ocaml-eio-linux))
 
 (define-public ocaml-eio-main
   (package
@@ -6220,8 +6220,8 @@ accesses to the store.")
     (description "@code{Eio_main} selects an appropriate backend (e.g.
 @samp{eio_linux} or @samp{eio_luv}), depending on your platform.")))
 
-(define-public ocaml5.0-eio-main
-  (package-with-ocaml5.0 ocaml-eio-main))
+;; (define-public ocaml5.0-eio-main
+;;   (package-with-ocaml5.0 ocaml-eio-main))
 
 (define-public ocaml-lwt
   (package

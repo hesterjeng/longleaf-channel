@@ -99,9 +99,6 @@ handling with Result types.")
      (base32
       "0000000000000000000000000000000000000000000000000000"))))
  (build-system dune-build-system)
- ;; (arguments
- ;;  `(#:package "longleaf-lib,longleaf-strategies"
- ;;    #:test-target "."))
  (native-inputs
   (list ocaml-alcotest ocaml-odoc))
  (propagated-inputs
