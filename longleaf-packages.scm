@@ -53,7 +53,7 @@ to be used for other repos."
 (define-public tacaml
 (package
  (name "ocaml-tacaml")
- (version "1.0.1")
+ (version "v1.0.1")
  (source (github-tag-origin "tacaml"
                             "https://github.com/hesterjeng/tacaml"
                             version
