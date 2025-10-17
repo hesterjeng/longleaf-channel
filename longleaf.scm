@@ -50,7 +50,7 @@ to be used for other repos."
 ;;; OCaml Packages
 
 ;; tacaml - OCaml bindings for TA-Lib
-(define-public tacaml
+(define-public ocaml-tacaml
 (package
  (name "ocaml-tacaml")
  (version "1.0.1")
@@ -63,15 +63,13 @@ to be used for other repos."
  (arguments
   `(#:test-target "."))
  (native-inputs
-  (list ocaml-odoc))
+  (list dune))
  (propagated-inputs
-  (list ocaml
-        dune
-        ocaml-ctypes
+  (list ocaml-ctypes
         ocaml-ppx-deriving
         ocaml-ppx-hash
-        ta-lib
-        pkg-config))
+        ocaml-containers
+        ta-lib))
  (home-page "https://github.com/hesterjeng/tacaml")
  (synopsis "OCaml bindings for TA-Lib technical analysis library")
  (description
@@ -83,50 +81,6 @@ data handling with Bigarray integration, modular design, and robust error
 handling with Result types.")
  (license license:gpl3+)))
 
-;; Full Longleaf package with all dependencies
-(define-public longleaf
-(package
- (name "longleaf")
- (version "cohttp")
- (source
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://github.com/hesterjeng/longleaf.git")
-          (commit "cohttp")))
-    (file-name (git-file-name name version))
-    (sha256
-     (base32 "1ckg348c95la77xpnj3lp35g4pwbb7kfrl7k379wgs0ajw6cc1ap"
-	     ))))
- (build-system dune-build-system)
- (native-inputs
-  (list ocaml-alcotest ocaml-odoc))
- (propagated-inputs
-  (list
-        ocaml-ptime
-        ocaml-ppx-yojson-conv-lib
-        ocaml-ppx-deriving
-        ocaml-ppx-variants-conv
-        ocaml-ppx-fields-conv
-        ocaml-cmdliner
-        ocaml-graph
-        ocaml-eio-main
-        tacaml
-        ocaml-fileutils
-        ocaml-yojson
-        ocaml-uuidm
-        ocaml-tyxml
-        ocaml-alcotest))
- (home-page "https://github.com/hesterjeng/longleaf")
- (synopsis "Algorithmic trading platform written in OCaml")
- (description
-  "Longleaf is an algorithmic trading platform that supports live trading,
-paper trading, and backtesting with multiple brokerages and market data sources.
-The platform uses a functional, modular architecture with strategies implemented
-as functors for maximum code reuse and type safety.
-
-The platform includes tacaml for TA-Lib technical analysis bindings.")
- (license license:gpl3+)))
 
 ;;; Python Packages
 
@@ -234,84 +188,60 @@ and portfolio managers including Sharpe ratio, win rate, volatility, drawdowns,
 rolling statistics, monthly returns, and various performance tear sheets.")
    (license license:asl2.0)))
 
-;; Development environment - provides Python environment for server
-(define-public longleaf-quantstats-dev
-  (package
-   (name "longleaf-quantstats-dev")
-   (version "0.1.0")
-   (source (local-file "." "longleaf-quantstats-source"
-                       #:recursive? #t))
-   (build-system pyproject-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-                     (delete 'configure)
-                     (delete 'build)
-                     (delete 'check)
-                     (replace 'install
-                              (lambda* (#:key outputs #:allow-other-keys)
-                                (let ((out (assoc-ref outputs "out")))
-                                  (copy-recursively "." (string-append out "/share/longleaf-quantstats"))
-                                  #t))))))
-   (propagated-inputs
-    (list python
+;; Full Longleaf package with all dependencies
+(define-public longleaf
+(package
+ (name "longleaf")
+ (version "cohttp")
+ (source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/hesterjeng/longleaf.git")
+          (commit "cohttp")))
+    (file-name (git-file-name name version))
+    (sha256
+     (base32 "1ckg348c95la77xpnj3lp35g4pwbb7kfrl7k379wgs0ajw6cc1ap"
+	     ))))
+ (build-system dune-build-system)
+ (native-inputs
+  (list ocaml-alcotest))
+ (arguments
+  ;; No tests.
+  '(#:tests? #f))
+ (inputs (list
           python-quantstats
-          python-pandas
-          python-numpy
-          python-frozendict))
-   (home-page "https://github.com/hesterjeng/longleaf")
-   (synopsis "Longleaf QuantStats server development environment")
-   (description
-    "Development package for Longleaf QuantStats FastAPI server. Provides Python
-environment with all dependencies for portfolio analytics and reporting.")
-   (license license:gpl3+)))
+          python-yfinance
+          python-multitasking
+          nlopt
+          node
+          )
+         )
+ (propagated-inputs
+  (list
+   ocaml-ptime
+   ocaml-ppx-yojson-conv-lib
+   ocaml-ppx-deriving
+   ocaml-ppx-variants-conv
+   ocaml-ppx-fields-conv
+   ocaml-cmdliner
+   ocaml-graph
+   ocaml-eio-main
+   ocaml-tacaml
+   ocaml-fileutils
+   ocaml-yojson
+   ocaml-uuidm
+   ocaml-tyxml
+   ocaml-cohttp-eio
+   ocaml-ppx-yojson-conv
+   ))
+ (home-page "https://github.com/hesterjeng/longleaf")
+ (synopsis "Algorithmic trading platform written in OCaml")
+ (description
+  "Longleaf is an algorithmic trading platform that supports live trading,
+paper trading, and backtesting with multiple brokerages and market data sources.
+The platform uses a functional, modular architecture with strategies implemented
+as functors for maximum code reuse and type safety.
 
-;;; Frontend Packages
-
-;; Development package - provides Node.js environment for npm workflow
-(define-public longleaf-frontend-dev
-  (package
-    (name "longleaf-frontend-dev")
-    (version "0.1.0")
-    (source (local-file "." "longleaf-frontend-source"
-                        #:recursive? #t
-                        #:select? (lambda (file stat)
-                                    (not (string-contains file "node_modules")))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (copy-recursively "." (string-append out "/share/longleaf-frontend"))
-               #t))))))
-    (propagated-inputs
-     (list node))
-    (home-page "https://github.com/hesterjeng/longleaf")
-    (synopsis "Longleaf React frontend development environment")
-    (description
-     "Development package for Longleaf React frontend. Provides Node.js and npm
-for running 'npm install' and 'npm start' in the React directory.")
-    (license license:gpl3+)))
-
-;; Production package - built static files
-(define-public longleaf-frontend
-  (package
-    (name "longleaf-frontend")
-    (version "0.1.0")
-    (source (local-file "build" "longleaf-frontend-build"
-                        #:recursive? #t))
-    (build-system copy-build-system)
-    (arguments
-     '(#:install-plan
-       '(("." "share/longleaf/static"))))
-    (home-page "https://github.com/hesterjeng/longleaf")
-    (synopsis "Longleaf React frontend (built)")
-    (description
-     "Pre-built React dashboard for Longleaf trading platform. Contains
-static HTML, CSS, and JavaScript files ready for serving.")
-    (license license:gpl3+)))
+The platform includes tacaml for TA-Lib technical analysis bindings.")
+ (license license:gpl3+)))
