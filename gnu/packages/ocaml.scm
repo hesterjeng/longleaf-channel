@@ -6059,17 +6059,13 @@ A library that needs to suspend and later resume the current thread of execution
                  ))
     (propagated-inputs (list ocaml-bigstringaf
                              ocaml-cstruct
-                             ocaml-lwt
                              ocaml-lwt-dllist
-                             ocaml-logs
                              ocaml-optint
                              ocaml-psq
                              ocaml-fmt
                              ocaml-hmap
                              ocaml-mtime
-                             ocaml-domain-local-await
-                             ;;
-                             ))
+                             ocaml-domain-local-await))
     (native-inputs (list ocaml-astring
                          ocaml-crowbar
                          ocaml-alcotest
@@ -12795,7 +12791,8 @@ up to OCaml 4.08.")
     (name "ocaml-http")
     (version "6.1.1")
     (build-system dune-build-system)
-    (arguments '(#:package "http"))
+    (arguments '(#:package "http"
+                 #:tests? #f))
     (home-page "https://github.com/mirage/ocaml-cohttp")
     (source
      (github-tag-origin
@@ -12803,18 +12800,6 @@ up to OCaml 4.08.")
       "1li96x3s287a092nb9d0panr55298a9dd3v1s9igdxllsb789l9a"
       "v"
       ))
-    (propagated-inputs
-      (list ocaml-re
-            ocaml-uri
-            ;; ocaml-http
-            ocaml-uri-sexp
-            ocaml-sexplib0
-            ocaml-ppx-sexp-conv
-            ocaml-stringext
-            ocaml-ppx-expect
-            ocaml-base-quickcheck
-            ocaml-base64
-            ))
     (native-inputs
      (list ocaml-fmt
            ocaml-jsonm
@@ -12920,25 +12905,14 @@ libraries.")
       "v"
       ))
     (propagated-inputs
-      (list ocaml-re
-            ocaml-tls
-            ocaml-uri
-            ocaml-ipaddr
-            ocaml-logs
-            ocaml-cohttp
+      (list ocaml-cohttp
             ocaml-eio
-            ocaml-eio-main
-            ocaml-mirage-crypto
+            ocaml-fmt
+            ocaml-http
+            ocaml-logs
+            ocaml-ppx-here
             ocaml-ptime
-            ;; ocaml-http
-            ocaml-uri-sexp
-            ocaml-sexplib0
-            ocaml-ppx-sexp-conv
-            ocaml-stringext
-            ocaml-ppx-expect
-            ocaml-base-quickcheck
-            ocaml-base64
-            ))
+            ocaml-uri))
     (native-inputs
      (list
       gmp
