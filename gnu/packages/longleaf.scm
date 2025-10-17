@@ -1,5 +1,5 @@
 ;; Longleaf Channel - All Package Definitions
-(define-module (longleaf)
+(define-module (gnu packages longleaf)
   #:use-module (gnu packages ocaml)
   #:use-module (guix packages)
   #:use-module (guix download)
