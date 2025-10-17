@@ -49,6 +49,8 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+(add-to-load-path (dirname (current-filename)))
+
 (define-module (ocaml)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
