@@ -5504,30 +5504,6 @@ wherever they are applicable.")
     (license license:isc)
     ))
 
-(define-public ocaml-tls
-  (package
-    (name "ocaml-tls")
-    (version "2.0.3")
-    (home-page "https://github.com/mirleft/ocaml-tls")
-    (source
-     (github-tag-origin
-      name home-page version "1w188b4c3cpfzgxyhil6g319r7y3hk9lw6wyf1881hwxsf6kprqq"
-      "v"
-      ))
-    (arguments
-    ;; Tests take FOREVER
-     '(#:tests? #f))
-    (build-system dune-build-system)
-    (propagated-inputs (list ocaml-ppx-jane ocaml-mirage-crypto ocaml-ptime ocaml-x509 ocaml-eio ocaml-core-unix ocaml-async ocaml-cstruct-async ocaml-mirage-ptime ocaml-mirage-kv ocaml-mirage-flow ocaml-crowbar ocaml-hxd ocaml-eio-main))
-    ;; (propagated-inputs (list ocaml-ohex ocaml-digestif ocaml-ptime ocaml-fpath ocaml-bos ocaml-ipaddr
-    ;;                          ocaml-mirage-crypto ocaml-kdf ocaml-gmap ocaml-asn1-combinators
-    ;;                          ))
-    (native-inputs (list gmp))
-    (synopsis "TLS in pure OCaml")
-    (description "Transport Layer Security (TLS) is probably the most widely deployed security protocol on the Internet. It provides communication privacy to prevent eavesdropping, tampering, and message forgery. Furthermore, it optionally provides authentication of the involved endpoints. TLS is commonly deployed for securing web services (HTTPS), emails, virtual private networks, and wireless networks.")
-    (license license:isc)
-    ))
-
 (define-public ocaml-ca-certs
   (package
     (name "ocaml-ca-certs")
@@ -6222,6 +6198,30 @@ accesses to the store.")
 
 (define-public ocaml5.0-eio-main
   (package-with-ocaml5.0 ocaml-eio-main))
+
+(define-public ocaml-tls
+  (package
+    (name "ocaml-tls")
+    (version "2.0.3")
+    (home-page "https://github.com/mirleft/ocaml-tls")
+    (source
+     (github-tag-origin
+      name home-page version "1w188b4c3cpfzgxyhil6g319r7y3hk9lw6wyf1881hwxsf6kprqq"
+      "v"
+      ))
+    (arguments
+    ;; Tests take FOREVER
+     '(#:tests? #f))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-ppx-jane ocaml-mirage-crypto ocaml-ptime ocaml-x509 ocaml-eio ocaml-core-unix ocaml-async ocaml-cstruct-async ocaml-mirage-ptime ocaml-mirage-kv ocaml-mirage-flow ocaml-crowbar ocaml-hxd ocaml-eio-main))
+    ;; (propagated-inputs (list ocaml-ohex ocaml-digestif ocaml-ptime ocaml-fpath ocaml-bos ocaml-ipaddr
+    ;;                          ocaml-mirage-crypto ocaml-kdf ocaml-gmap ocaml-asn1-combinators
+    ;;                          ))
+    (native-inputs (list gmp))
+    (synopsis "TLS in pure OCaml")
+    (description "Transport Layer Security (TLS) is probably the most widely deployed security protocol on the Internet. It provides communication privacy to prevent eavesdropping, tampering, and message forgery. Furthermore, it optionally provides authentication of the involved endpoints. TLS is commonly deployed for securing web services (HTTPS), emails, virtual private networks, and wireless networks.")
+    (license license:isc)
+    ))
 
 (define-public ocaml-lwt
   (package
