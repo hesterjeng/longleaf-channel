@@ -5,7 +5,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
-  #:use-module (gnu packages dune)
+  #:use-module (guix build-system dune)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system copy)
