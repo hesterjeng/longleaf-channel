@@ -32,7 +32,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages databases)
-  #:use-module (gnu packages ocaml))
+  #:use-module (scramocaml))
 
 (define* (github-tag-origin name home-page version hash tag-prefix)
   "Create an origin for a GitHub repository using a version tag.
