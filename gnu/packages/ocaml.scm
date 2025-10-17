@@ -13267,6 +13267,24 @@ bibliography files in BibTeX format, a bibliography in HTML format.")
 3.0, supporting easy interop between OCaml and GNU Guile Scheme.")
     (license license:gpl3+)))
 
+(define-public ocaml-nlopt
+  (package
+    (name "ocaml-nlopt")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        "https://github.com/mkur/nlopt-ocaml/archive/refs/tags/release-0.7.tar.gz")
+       (sha256
+        (base32 "0vnw0lqhi80fbm6q67rzd2n9lpm4jhivszzsm80djvzb0jfmzwjk"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list nlopt))
+    (home-page "https://github.com/mkur/nlopt-ocaml")
+    (synopsis "OCaml bindings to the NLOpt optimization library")
+    (description #f)
+    (license #f)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
