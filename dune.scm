@@ -20,14 +20,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (dune-bs)
+(define-module (dune)
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module ((guix build-system gnu) #:prefix gnu:)
-  #:use-module ((scramocaml) #:prefix ocaml:)
+  #:use-module ((ocaml) #:prefix ocaml:)
   #:use-module (guix packages)
   #:use-module (srfi srfi-1)
   #:export (%dune-build-system-modules

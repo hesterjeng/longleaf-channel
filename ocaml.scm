@@ -49,7 +49,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (scramocaml)
+(define-module (ocaml)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -100,7 +100,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   ;; #:use-module (guix build-system dune)
-  #:use-module (dune-bs)
+  #:use-module (dune)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   ;; #:use-module (guix build-system ocaml)
