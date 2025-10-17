@@ -49,9 +49,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(add-to-load-path (dirname (current-filename)))
-
-(define-module (ocaml)
+(define-module (gnu packages ocaml)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -102,11 +100,11 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   ;; #:use-module (guix build-system dune)
-  #:use-module (dune)
+  #:use-module (gnu packages dune)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   ;; #:use-module (guix build-system ocaml)
-  #:use-module (ocaml-bs)
+  #:use-module (gnu packages ocaml-bs)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)

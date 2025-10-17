@@ -1,13 +1,11 @@
 ;; Longleaf Channel - All Package Definitions
-(add-to-load-path (dirname (current-filename)))
-
 (define-module (longleaf)
-  #:use-module (ocaml)
+  #:use-module (gnu packages ocaml)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
-  #:use-module (dune)
+  #:use-module (gnu packages dune)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system copy)
