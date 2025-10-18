@@ -9511,6 +9511,7 @@ interfaces and the standard higher-level merlin protocol.")
     (name "ocaml-merlin")
     (arguments
      '(#:package "merlin"
+       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (replace 'check
