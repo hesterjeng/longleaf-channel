@@ -4935,6 +4935,30 @@ Lambda Soup is to be easy to use, including in interactive sessions, and to have
 a minimal learning curve.  It is a very simple library.")
     (license license:expat)))
 
+(define-public ocaml-mirage-crypto
+  (package
+    (name "ocaml-mirage-crypto")
+    (version "2.0.2")
+    (home-page
+     "https://github.com/mirage/mirage-crypto"
+     )
+    (arguments
+     ;; No tests
+     `(#:tests? #f))
+    (source
+     (github-tag-origin
+      name home-page version
+      "0zsqd5fhvq3cq00drymbbbzy7wxz72h5ppzxlh0yr1ssj4jn0lp4"
+      "v"
+      ))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-dune-configurator
+                             ocaml-eqaf))
+    (synopsis "Cryptographic primitives for OCaml, in OCaml (also used in MirageOS) ")
+    (description "mirage-crypto is a small cryptographic library that puts emphasis on the applicative style and ease of use. It includes basic ciphers (AES, 3DES, RC4, ChaCha20/Poly1305), AEAD primitives (AES-GCM, AES-CCM, ChaCha20/Poly1305), public-key primitives (RSA, DSA, DH), elliptic curves (NIST P-256, P-384, P-521, and curve 25519), and a strong RNG (Fortuna).")
+    (license license:isc)
+    ))
+
 (define-public ocaml-mirage-crypto-rng
   (package
     (inherit ocaml-mirage-crypto)
@@ -5379,30 +5403,6 @@ wherever they are applicable.")
     (description "Faraday is a library for writing fast and memory-efficient serializers. Its core type and related operation gives the user fine-grained control over copying and allocation behavior while serializing user-defined types, and presents the output in a form that makes it possible to use vectorized write operations, such as the writev system call, or any other platform or application-specific output APIs."
        )
       (license license:bsd-3)
-    ))
-
-(define-public ocaml-mirage-crypto
-  (package
-    (name "ocaml-mirage-crypto")
-    (version "2.0.2")
-    (home-page
-     "https://github.com/mirage/mirage-crypto"
-     )
-    (arguments
-     ;; No tests
-     `(#:tests? #f))
-    (source
-     (github-tag-origin
-      name home-page version
-      "0zsqd5fhvq3cq00drymbbbzy7wxz72h5ppzxlh0yr1ssj4jn0lp4"
-      "v"
-      ))
-    (build-system dune-build-system)
-    (propagated-inputs (list ocaml-dune-configurator
-                             ocaml-eqaf))
-    (synopsis "Cryptographic primitives for OCaml, in OCaml (also used in MirageOS) ")
-    (description "mirage-crypto is a small cryptographic library that puts emphasis on the applicative style and ease of use. It includes basic ciphers (AES, 3DES, RC4, ChaCha20/Poly1305), AEAD primitives (AES-GCM, AES-CCM, ChaCha20/Poly1305), public-key primitives (RSA, DSA, DH), elliptic curves (NIST P-256, P-384, P-521, and curve 25519), and a strong RNG (Fortuna).")
-    (license license:isc)
     ))
 
 (define-public ocaml-ohex
