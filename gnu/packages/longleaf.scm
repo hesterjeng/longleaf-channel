@@ -1,4 +1,3 @@
-(primitive-load (string-append (dirname (current-filename)) "/ocaml.scm"))
 ;; Longleaf Channel - All Package Definitions
 (define-module (gnu packages longleaf)
   #:use-module (gnu packages ocaml)
@@ -35,6 +34,8 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages databases)
   )
+
+(primitive-load (string-append (dirname (current-filename)) "/ocaml.scm"))
 
 (define* (github-tag-origin name home-page version hash tag-prefix)
   "Create an origin for a GitHub repository using a version tag.
