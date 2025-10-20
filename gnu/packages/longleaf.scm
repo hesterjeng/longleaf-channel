@@ -1,3 +1,4 @@
+(primitive-load (string-append (dirname (current-filename)) "/ocaml.scm"))
 ;; Longleaf Channel - All Package Definitions
 (define-module (gnu packages longleaf)
   #:use-module (gnu packages ocaml)
