@@ -5702,7 +5702,7 @@ wherever they are applicable.")
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-ohex ocaml-digestif ocaml-ptime ocaml-fpath ocaml-bos ocaml-ipaddr
                              ocaml-mirage-crypto ocaml-mirage-crypto-rng ocaml-mirage-crypto-ec
-                             ocaml-kdf ocaml-gmap ocaml-asn1-combinators ocaml-base64
+                             ocaml-mirage-crypto-pk ocaml-kdf ocaml-gmap ocaml-asn1-combinators ocaml-base64
                              ))
     (native-inputs (list gmp))
     (synopsis "")
