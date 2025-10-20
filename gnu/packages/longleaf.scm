@@ -59,7 +59,7 @@ to be used for other repos."
  (source (github-tag-origin "tacaml"
                             "https://github.com/hesterjeng/tacaml"
                             version
-			    "0xvgy43yqrfd85c6dpyffff5dqj6idvcxcv5gn6argcai145cwr1"
+                            "0xvgy43yqrfd85c6dpyffff5dqj6idvcxcv5gn6argcai145cwr1"
                             "v"))
  (build-system dune-build-system)
  (arguments
@@ -203,8 +203,7 @@ rolling statistics, monthly returns, and various performance tear sheets.")
           (commit "cohttp")))
     (file-name (git-file-name name version))
     (sha256
-     (base32 "1ckg348c95la77xpnj3lp35g4pwbb7kfrl7k379wgs0ajw6cc1ap"
-	     ))))
+     (base32 "1ckg348c95la77xpnj3lp35g4pwbb7kfrl7k379wgs0ajw6cc1ap"))))
  (build-system dune-build-system)
  (native-inputs
   (list ocaml-alcotest))
