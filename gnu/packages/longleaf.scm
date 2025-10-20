@@ -235,6 +235,7 @@ rolling statistics, monthly returns, and various performance tear sheets.")
    ocaml-tyxml
    ocaml-cohttp-eio
    ocaml-ppx-yojson-conv
+   ocaml-tls-eio
    ))
  (home-page "https://github.com/hesterjeng/longleaf")
  (synopsis "Algorithmic trading platform written in OCaml")
