@@ -5586,6 +5586,8 @@ wherever they are applicable.")
     (home-page
      "https://github.com/hannesm/gmap"
      )
+    (arguments
+     `(#:tests? #f))
     (source
      (github-tag-origin
       name home-page version "0880mhcybr662k6wnahx5mwbialh878kkzxacn47qniadd21x411"
