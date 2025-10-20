@@ -4937,29 +4937,58 @@ a minimal learning curve.  It is a very simple library.")
 
 (define-public ocaml-mirage-crypto-rng
   (package
+    (inherit ocaml-mirage-crypto)
     (name "ocaml-mirage-crypto-rng")
-    (version "2.0.2")
     (arguments
      ;; No tests
-     `(#:tests? #f))
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        "https://github.com/mirage/mirage-crypto/releases/download/v2.0.2/mirage-crypto-2.0.2.tbz")
-       (sha256
-        (base32 "0x2q47b07a7s2br75zxdvlmsb421mif7ry2p6p4zn9s0ycwrv6kk"))))
-    (build-system dune-build-system)
-    (propagated-inputs (list ocaml-dune-configurator ocaml-duration ocaml-logs
-                             ocaml-mirage-crypto ocaml-digestif))
+     `(#:tests? #f
+       #:package "mirage-crypto-rng"))
+    (propagated-inputs (list ocaml-dune-configurator
+                             ocaml-duration
+                             ocaml-logs
+                             ocaml-mirage-crypto
+                             ocaml-digestif
+                             ocaml-randomconv))
     (native-inputs (list ocaml-ounit2 ocaml-randomconv ocaml-ohex))
-    (home-page "https://github.com/mirage/mirage-crypto")
     (synopsis "A cryptographically secure PRNG")
     (description
      "Mirage-crypto-rng provides a random number generator interface, and
 implementations: Fortuna, HMAC-DRBG, getrandom/getentropy based (in the unix
-sublibrary).")
-    (license license:isc)))
+sublibrary).")))
+
+(define-public ocaml-mirage-crypto-ec
+  (package
+    (inherit ocaml-mirage-crypto)
+    (name "ocaml-mirage-crypto-ec")
+    (arguments
+     `(#:tests? #f
+       #:package "mirage-crypto-ec"))
+    (propagated-inputs (list ocaml-dune-configurator
+                             ocaml-eqaf
+                             ocaml-mirage-crypto-rng
+                             ocaml-digestif))
+    (synopsis "Elliptic Curve Cryptography with primitives taken from Fiat")
+    (description
+     "Mirage-crypto-ec provides elliptic curve cryptography (ECDH, ECDSA, EdDSA)
+for MirageOS.")))
+
+(define-public ocaml-mirage-crypto-pk
+  (package
+    (inherit ocaml-mirage-crypto)
+    (name "ocaml-mirage-crypto-pk")
+    (arguments
+     `(#:tests? #f
+       #:package "mirage-crypto-pk"))
+    (propagated-inputs (list ocaml-mirage-crypto
+                             ocaml-mirage-crypto-rng
+                             ocaml-digestif
+                             ocaml-zarith
+                             ocaml-eqaf))
+    (native-inputs (list gmp ocaml-ounit2 ocaml-randomconv ocaml-ohex))
+    (synopsis "Public-key cryptography (RSA, DSA, DH)")
+    (description
+     "Mirage-crypto-pk provides public-key cryptography (RSA, DSA, DH) for
+MirageOS.")))
 
 (define-public ocaml-dune-configurator
   (package
@@ -5369,12 +5398,8 @@ wherever they are applicable.")
       "v"
       ))
     (build-system dune-build-system)
-    (propagated-inputs (list
-                        ocaml-ohex
-                        ocaml-zarith
-                        ocaml-mirage-sleep
-                        ocaml-mirage-runtime
-                        ocaml-logs ocaml-digestif ocaml-duration ocaml-eqaf ocaml-mirage-mtime ocaml-miou))
+    (propagated-inputs (list ocaml-dune-configurator
+                             ocaml-eqaf))
     (synopsis "Cryptographic primitives for OCaml, in OCaml (also used in MirageOS) ")
     (description "mirage-crypto is a small cryptographic library that puts emphasis on the applicative style and ease of use. It includes basic ciphers (AES, 3DES, RC4, ChaCha20/Poly1305), AEAD primitives (AES-GCM, AES-CCM, ChaCha20/Poly1305), public-key primitives (RSA, DSA, DH), elliptic curves (NIST P-256, P-384, P-521, and curve 25519), and a strong RNG (Fortuna).")
     (license license:isc)
