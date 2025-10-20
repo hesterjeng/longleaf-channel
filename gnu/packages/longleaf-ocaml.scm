@@ -4935,6 +4935,33 @@ Lambda Soup is to be easy to use, including in interactive sessions, and to have
 a minimal learning curve.  It is a very simple library.")
     (license license:expat)))
 
+(define-public ocaml-duration
+  (package
+    (name "ocaml-duration")
+    (version "0.2.1")
+    (arguments
+     ;; No tests
+     `(#:tests? #f))
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/hannesm/duration/")
+                (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vvxi0ipxmdz1k4h501brvccniwf3wpc32djbccyyrzraiz7qkff"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/hannesm/duration")
+    (synopsis "Conversions to various time units")
+    (description
+     "This package provides a duration is represented in nanoseconds as an
+unsigned 64 bit integer.  This has a range of up to 584 years.  Functions
+provided check the input and raise on negative or out of bound input.")
+    (license license:isc)))
+
 (define-public ocaml-digestif
   (package
     (name "ocaml-digestif")
@@ -5053,7 +5080,8 @@ message report is decoupled from logging and is handled by a reporter.")
                              ocaml-eqaf
                              ocaml-digestif
                              ocaml-logs
-                             ocaml-zarith))
+                             ocaml-zarith
+                             ocaml-duration))
     (synopsis "Cryptographic primitives for OCaml, in OCaml (also used in MirageOS) ")
     (description "mirage-crypto is a small cryptographic library that puts emphasis on the applicative style and ease of use. It includes basic ciphers (AES, 3DES, RC4, ChaCha20/Poly1305), AEAD primitives (AES-GCM, AES-CCM, ChaCha20/Poly1305), public-key primitives (RSA, DSA, DH), elliptic curves (NIST P-256, P-384, P-521, and curve 25519), and a strong RNG (Fortuna).")
     (license license:isc)
@@ -7459,33 +7487,6 @@ a fully-standalone, specialised unikernel.")
     (home-page "https://github.com/mirage/mirage-bootvar-unix")
     (synopsis "Unix implementation of MirageOS Bootvar interface")
     (description "Library for passing boot parameters from Solo5 to MirageOS.")
-    (license license:isc)))
-
-(define-public ocaml-duration
-  (package
-    (name "ocaml-duration")
-    (version "0.2.1")
-    (arguments
-     ;; No tests
-     `(#:tests? #f))
-    (source (origin
-              (method git-fetch)
-              (uri
-               (git-reference
-                (url "https://github.com/hannesm/duration/")
-                (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0vvxi0ipxmdz1k4h501brvccniwf3wpc32djbccyyrzraiz7qkff"))))
-    (build-system dune-build-system)
-    (native-inputs (list ocaml-alcotest))
-    (home-page "https://github.com/hannesm/duration")
-    (synopsis "Conversions to various time units")
-    (description
-     "This package provides a duration is represented in nanoseconds as an
-unsigned 64 bit integer.  This has a range of up to 584 years.  Functions
-provided check the input and raise on negative or out of bound input.")
     (license license:isc)))
 
 (define-public ocaml-mirage-time
