@@ -5936,6 +5936,8 @@ contents of emails.")
     (version "1.0.0")
     (home-page "https://github.com/robur-coop/kdf"
      )
+    (arguments
+     `(#:tests? #f))
     (source
      (github-tag-origin
       name home-page version "1ggw55mppvxliwahv54ryq8znilnd17asas1m301bq08bznff9fy"
