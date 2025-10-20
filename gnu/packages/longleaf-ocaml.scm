@@ -6266,7 +6266,10 @@ accesses to the store.")
        #:tests? #f))
     (propagated-inputs (list ocaml-tls
                              ocaml-mirage-crypto-rng
-                             ocaml-eio))
+                             ocaml-eio
+                             ocaml-logs
+                             ocaml-digestif
+                             ocaml-zarith))
    )
   )
 
