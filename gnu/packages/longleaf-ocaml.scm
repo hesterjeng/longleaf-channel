@@ -4935,6 +4935,66 @@ Lambda Soup is to be easy to use, including in interactive sessions, and to have
 a minimal learning curve.  It is a very simple library.")
     (license license:expat)))
 
+(define-public ocaml-logs
+  (package
+    (name "ocaml-logs")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://erratique.ch/software/logs/releases/"
+                                  "logs-" version ".tbz"))
+              (sha256
+                (base32
+                  "1m861xfcd80y2g298wxdcmhz43jfximkqid9vqcqzqhwlidhd5zf"))))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:tests? #f
+       #:build-flags (list "build")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'unpack 'disable-browser-support
+           (lambda _
+             ;; Disable js_of_ocaml browser support to avoid dependency
+             (substitute* "pkg/pkg.ml"
+               (("let jsoo = Conf.value c jsoo in")
+                "let jsoo = false in"))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Use ocamlfind install with subdirs for sub-packages
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib/ocaml/site-lib/logs")))
+               (with-directory-excursion "_build"
+                 ;; Install main library
+                 (invoke "ocamlfind" "install" "logs" "../pkg/META"
+                         "src/logs.a" "src/logs.cma" "src/logs.cmxa"
+                         "src/logs.cmxs" "src/logs.cmx"
+                         "src/logs.cmi" "src/logs.mli")
+                 ;; Manually create subdirectories and install sub-libraries
+                 (for-each (lambda (sublib)
+                             (let ((dir (string-append lib "/" sublib)))
+                               (mkdir-p dir)
+                               (for-each (lambda (f)
+                                           (copy-file f (string-append dir "/" (basename f))))
+                                         (find-files (string-append "src/" sublib)
+                                                     "\\.(cma|cmxa|a|cmxs|cmx|cmi|mli)$"))))
+                           '("fmt" "cli" "lwt" "threaded" "top")))))))))
+    (native-inputs
+     (list ocamlbuild))
+    (propagated-inputs
+     `(("fmt" ,ocaml-fmt)
+       ("lwt" ,ocaml-lwt)
+       ("mtime" ,ocaml-mtime)
+       ;; ("result" ,ocaml-result)
+       ("cmdliner" ,ocaml-cmdliner)
+       ("topkg" ,ocaml-topkg)))
+    (home-page "https://erratique.ch/software/logs")
+    (synopsis "Logging infrastructure for OCaml")
+    (description "Logs provides a logging infrastructure for OCaml.  Logging is
+performed on sources whose reporting level can be set independently.  Log
+message report is decoupled from logging and is handled by a reporter.")
+    (license license:isc)))
+
 (define-public ocaml-mirage-crypto
   (package
     (name "ocaml-mirage-crypto")
@@ -6617,66 +6677,6 @@ module Unix.")
     (description "This package provides a deprecated logging component for
 ocaml lwt.")
     (license license:lgpl2.1)))
-
-(define-public ocaml-logs
-  (package
-    (name "ocaml-logs")
-    (version "0.9.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://erratique.ch/software/logs/releases/"
-                                  "logs-" version ".tbz"))
-              (sha256
-                (base32
-                  "1m861xfcd80y2g298wxdcmhz43jfximkqid9vqcqzqhwlidhd5zf"))))
-    (build-system ocaml-build-system)
-    (arguments
-     `(#:tests? #f
-       #:build-flags (list "build")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'disable-browser-support
-           (lambda _
-             ;; Disable js_of_ocaml browser support to avoid dependency
-             (substitute* "pkg/pkg.ml"
-               (("let jsoo = Conf.value c jsoo in")
-                "let jsoo = false in"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Use ocamlfind install with subdirs for sub-packages
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib/ocaml/site-lib/logs")))
-               (with-directory-excursion "_build"
-                 ;; Install main library
-                 (invoke "ocamlfind" "install" "logs" "../pkg/META"
-                         "src/logs.a" "src/logs.cma" "src/logs.cmxa"
-                         "src/logs.cmxs" "src/logs.cmx"
-                         "src/logs.cmi" "src/logs.mli")
-                 ;; Manually create subdirectories and install sub-libraries
-                 (for-each (lambda (sublib)
-                             (let ((dir (string-append lib "/" sublib)))
-                               (mkdir-p dir)
-                               (for-each (lambda (f)
-                                           (copy-file f (string-append dir "/" (basename f))))
-                                         (find-files (string-append "src/" sublib)
-                                                     "\\.(cma|cmxa|a|cmxs|cmx|cmi|mli)$"))))
-                           '("fmt" "cli" "lwt" "threaded" "top")))))))))
-    (native-inputs
-     (list ocamlbuild))
-    (propagated-inputs
-     `(("fmt" ,ocaml-fmt)
-       ("lwt" ,ocaml-lwt)
-       ("mtime" ,ocaml-mtime)
-       ;; ("result" ,ocaml-result)
-       ("cmdliner" ,ocaml-cmdliner)
-       ("topkg" ,ocaml-topkg)))
-    (home-page "https://erratique.ch/software/logs")
-    (synopsis "Logging infrastructure for OCaml")
-    (description "Logs provides a logging infrastructure for OCaml.  Logging is
-performed on sources whose reporting level can be set independently.  Log
-message report is decoupled from logging and is handled by a reporter.")
-    (license license:isc)))
 
 (define-public ocaml-fpath
   (package
