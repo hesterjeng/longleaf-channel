@@ -6224,7 +6224,7 @@ accesses to the store.")
 
 (define-public ocaml-tls-eio
   (package
-    (inherit ocaml-tls-eio)
+    (inherit ocaml-tls)
     (name "ocaml-tls-eio")
     (arguments
      '(
