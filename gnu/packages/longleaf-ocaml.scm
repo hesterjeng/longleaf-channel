@@ -5079,6 +5079,7 @@ message report is decoupled from logging and is handled by a reporter.")
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-dune-configurator
                              ocaml-eqaf))
+    (native-inputs (list ocaml-digestif ocaml-logs ocaml-zarith ocaml-duration))
     (synopsis "Cryptographic primitives for OCaml, in OCaml (also used in MirageOS) ")
     (description "mirage-crypto is a small cryptographic library that puts emphasis on the applicative style and ease of use. It includes basic ciphers (AES, 3DES, RC4, ChaCha20/Poly1305), AEAD primitives (AES-GCM, AES-CCM, ChaCha20/Poly1305), public-key primitives (RSA, DSA, DH), elliptic curves (NIST P-256, P-384, P-521, and curve 25519), and a strong RNG (Fortuna).")
     (license license:isc)
