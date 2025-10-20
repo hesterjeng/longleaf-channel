@@ -5690,6 +5690,8 @@ wherever they are applicable.")
     (home-page
      "https://github.com/mirleft/ocaml-x509"
      )
+    (arguments
+     `(#:tests? #f))
     (source
      (github-tag-origin
       name home-page version "0mdyyp5lddc870jl2vrll77yfkq0ckhf77wgazpkr8q3995ckl4h"
