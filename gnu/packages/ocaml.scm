@@ -12527,7 +12527,7 @@ defined in OCaml 4.12.0.")
             ocaml-fix
             ocaml-fpath
             ocaml-menhir
-           
+	    ocaml-camlp-streams
             ocaml-ppxlib
             ocaml-re
             ;; ocaml-odoc-parser
