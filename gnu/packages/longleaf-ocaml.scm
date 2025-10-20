@@ -4934,6 +4934,7 @@ scripts.  Lambda Soup rewrites its own ocamldoc page this way.  A major goal of
 Lambda Soup is to be easy to use, including in interactive sessions, and to have
 a minimal learning curve.  It is a very simple library.")
     (license license:expat)))
+
 (define-public ocaml-mirage-crypto-rng
   (package
     (name "ocaml-mirage-crypto-rng")

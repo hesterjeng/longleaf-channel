@@ -135,6 +135,7 @@ complexity of manual thread or process management.")
           python-requests
           python-lxml
           python-appdirs
+	  python-platformdirs
           python-pytz
           python-beautifulsoup4
           python-websockets
