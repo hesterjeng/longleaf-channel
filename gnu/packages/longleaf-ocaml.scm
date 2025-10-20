@@ -5068,7 +5068,8 @@ message report is decoupled from logging and is handled by a reporter.")
      )
     (arguments
      ;; No tests
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:package "mirage-crypto"))
     (source
      (github-tag-origin
       name home-page version
