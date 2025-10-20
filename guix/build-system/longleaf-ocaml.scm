@@ -18,7 +18,7 @@
 ;;;
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
-(define-module (guix build-system ocaml)
+(define-module (guix build-system longleaf-ocaml)
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix gexp)
@@ -70,42 +70,42 @@
 
 (define (default-ocaml)
   "Return the default OCaml package, resolved lazily."
-  (@* (gnu packages ocaml) ocaml))
+  (@* (gnu packages longleaf-ocaml) ocaml))
 
 (define (default-findlib)
   "Return the default OCaml-findlib package, resolved lazily."
-  (@* (gnu packages ocaml) ocaml-findlib))
+  (@* (gnu packages longleaf-ocaml) ocaml-findlib))
 
 (define (default-dune-build-system)
   "Return the dune-build-system, resolved lazily."
-  (@* (guix build-system dune) dune-build-system))
+  (@* (guix build-system longleaf-dune) dune-build-system))
 
 (define (default-ocaml4.07)
-  (@* (gnu packages ocaml) ocaml-4.07))
+  (@* (gnu packages longleaf-ocaml) ocaml-4.07))
 
 (define (default-ocaml4.07-findlib)
-  (@* (gnu packages ocaml) ocaml4.07-findlib))
+  (@* (gnu packages longleaf-ocaml) ocaml4.07-findlib))
 
 (define (default-ocaml4.07-dune)
-  (@* (gnu packages ocaml) ocaml4.07-dune))
+  (@* (gnu packages longleaf-ocaml) ocaml4.07-dune))
 
 (define (default-ocaml4.09)
-  (@* (gnu packages ocaml) ocaml-4.09))
+  (@* (gnu packages longleaf-ocaml) ocaml-4.09))
 
 (define (default-ocaml4.09-findlib)
-  (@* (gnu packages ocaml) ocaml4.09-findlib))
+  (@* (gnu packages longleaf-ocaml) ocaml4.09-findlib))
 
 (define (default-ocaml4.09-dune)
-  (@* (gnu packages ocaml) ocaml4.09-dune))
+  (@* (gnu packages longleaf-ocaml) ocaml4.09-dune))
 
 (define (default-ocaml5.0)
-  (@* (gnu packages ocaml) ocaml-5.0))
+  (@* (gnu packages longleaf-ocaml) ocaml-5.0))
 
 (define (default-ocaml5.0-findlib)
-  (@* (gnu packages ocaml) ocaml5.0-findlib))
+  (@* (gnu packages longleaf-ocaml) ocaml5.0-findlib))
 
 (define (default-ocaml5.0-dune)
-  (@* (gnu packages ocaml) ocaml5.0-dune))
+  (@* (gnu packages longleaf-ocaml) ocaml5.0-dune))
 
 (define* (package-with-explicit-ocaml ocaml findlib dune old-prefix new-prefix
                                        #:key variant-property)

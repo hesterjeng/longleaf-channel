@@ -20,14 +20,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build-system dune)
+(define-module (guix build-system longleaf-dune)
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module ((guix build-system gnu) #:prefix gnu:)
-  #:use-module ((guix build-system ocaml) #:prefix ocaml:)
+  #:use-module ((guix build-system longleaf-ocaml) #:prefix ocaml:)
   #:use-module (guix packages)
   #:use-module (srfi srfi-1)
   #:export (%dune-build-system-modules
@@ -50,7 +50,7 @@
   "Return the default OCaml package."
 
   ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages ocaml))))
+  (let ((module (resolve-interface '(gnu packages longleaf-ocaml))))
     (module-ref module 'dune)))
 
 (define* (lower name

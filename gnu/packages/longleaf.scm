@@ -1,11 +1,11 @@
 ;; Longleaf Channel - All Package Definitions
 (define-module (gnu packages longleaf)
-  #:use-module (gnu packages ocaml)
+  #:use-module (gnu packages longleaf-ocaml)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
-  #:use-module (guix build-system dune)
+  #:use-module (guix build-system longleaf-dune)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system copy)
@@ -34,8 +34,6 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages databases)
   )
-
-(primitive-load (string-append (dirname (current-filename)) "/ocaml.scm"))
 
 (define* (github-tag-origin name home-page version hash tag-prefix)
   "Create an origin for a GitHub repository using a version tag.
