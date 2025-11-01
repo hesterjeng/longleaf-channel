@@ -253,8 +253,7 @@ authentication and decryption issues by dynamically scraping the data.")
           python-dateutil
           python-packaging
           python-yfinance
-          python-multitasking
-          python-ipython))
+          python-multitasking))
    (home-page "https://github.com/ranaroussi/quantstats")
    (synopsis "Portfolio analytics for quants")
    (description
