@@ -50,6 +50,77 @@ to be used for other repos."
       hash))))
 ;;; OCaml Packages
 
+(define-public ocaml-multicore-magic
+  (package
+    (name "ocaml-multicore-magic")
+    (version "2.3.1")
+ (arguments
+  ;; No tests.
+  '(#:tests? #f))
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        "https://github.com/ocaml-multicore/multicore-magic/releases/download/2.3.1/multicore-magic-2.3.1.tbz")
+       (sha256
+        (base32 "0pqr3hak7xdhbsmra95sff1k7nipza0x6jmhh5r1h4lzvj5j1mq1"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-dscheck))
+    ;; (native-inputs (list ocaml-domain-shims
+    ;; 			 ))
+    (home-page "https://github.com/ocaml-multicore/multicore-magic")
+    (synopsis "Low-level multicore utilities for OCaml")
+    (description #f)
+    (license license:isc)))
+
+(define-public ocaml-backoff
+  (package
+    (name "ocaml-backoff")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        "https://github.com/ocaml-multicore/backoff/releases/download/0.1.1/backoff-0.1.1.tbz")
+       (sha256
+        (base32 "00wzmhvkg5d6jgqjqkjfgd2dh7wbwgfa97c7al5brc97n88s7gh0"))))
+ (arguments
+  ;; No tests.
+  '(#:tests? #f))
+    (build-system dune-build-system)
+    ;; (propagated-inputs (list ocaml-odoc))
+    ;; (native-inputs (list ocaml-alcotest ocaml-domain-shims))
+    (home-page "https://github.com/ocaml-multicore/backoff")
+    (synopsis "Exponential backoff mechanism for OCaml")
+    (description #f)
+    (license license:isc)))
+
+(define-public ocaml-saturn
+  (package
+    (name "ocaml-saturn")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        "https://github.com/ocaml-multicore/saturn/releases/download/1.0.0/saturn-1.0.0.tbz")
+       (sha256
+        (base32 "021a0yk4sjbjy998r0nc20gk1p2sxg29ay0l7zaym37r2dklz7id"))))
+    (build-system dune-build-system)
+ (arguments
+  ;; No tests.
+  '(#:tests? #f))
+    ;; (propagated-inputs (list ocaml-backoff ocaml-multicore-magic
+    ;;                          ocaml-sherlodoc ocaml-odoc))
+    (native-inputs (list
+			 ocaml-multicore-magic ocaml-backoff
+			 ))
+    (home-page "https://github.com/ocaml-multicore/saturn")
+    (synopsis
+     "Collection of concurent-safe data structures for Multicore OCaml")
+    (description #f)
+    (license license:isc)))
+
 ;; tacaml - OCaml bindings for TA-Lib
 (define-public ocaml-tacaml
 (package
@@ -63,6 +134,9 @@ to be used for other repos."
  (build-system dune-build-system)
  (arguments
   `(#:test-target "."))
+ ;; (arguments
+ ;;  ;; No tests.
+ ;;  '(#:tests? #f))
  (native-inputs
   (list dune))
  (propagated-inputs
