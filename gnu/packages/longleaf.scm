@@ -320,3 +320,49 @@ as functors for maximum code reuse and type safety.
 
 The platform includes tacaml for TA-Lib technical analysis bindings.")
  (license license:gpl3+)))
+
+;; Massive Relay - WebSocket relay for sharing Massive API connections
+(define-public massive-relay
+(package
+ (name "massive-relay")
+ (version "master")
+ (source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/hesterjeng/massive-relay.git")
+          (commit "master")))
+    (file-name (git-file-name name version))
+    (sha256
+     (base32 "0j97dkasb7ijhcylhrq7072pd1vkqmlsfhclvjfa2rcchdbiqifl"))))
+ (build-system dune-build-system)
+ (arguments
+  '(#:tests? #f))
+ (propagated-inputs
+  (list
+   ocaml-eio-main
+   ocaml-yojson
+   ocaml-ptime
+   ocaml-containers
+   ocaml-tls
+   ocaml-tls-eio
+   ocaml-x509
+   ocaml-digestif
+   ocaml-mirage-crypto-rng
+   ocaml-uri
+   ocaml-base64
+   ocaml-cstruct
+   ocaml-cmdliner
+   ocaml-ppx-deriving
+   ocaml-ppx-yojson-conv
+   ))
+ (home-page "https://github.com/hesterjeng/massive-relay")
+ (synopsis "WebSocket relay for sharing Massive API connections")
+ (description
+  "Massive Relay is a WebSocket relay service that connects to the Massive
+market data API and broadcasts real-time stock data to multiple local clients.
+This allows multiple trading strategies or analysis tools to share a single
+upstream WebSocket connection, reducing API usage and connection overhead.
+The relay speaks the Massive protocol natively, making it a drop-in replacement
+for direct Massive connections.")
+ (license license:gpl3+)))
