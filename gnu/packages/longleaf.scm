@@ -122,28 +122,6 @@ to be used for other repos."
     (license license:isc)))
 
 ;; tacaml - OCaml bindings for TA-Lib
-(define-public ocaml-kerdaml
-(package
- (name "ocaml-kerdaml")
- (version "0.3.0")
- (source (github-tag-origin "kerdaml"
-                            "https://github.com/hesterjeng/kerdaml"
-                            version
-                            "17s5zhq2r4bidx0k5day1wj6gcn5fzxza4pm6g9dkzcg78nnm0cg"
-                            "v"))
- (build-system dune-build-system)
- (arguments
-  `(#:test-target "."))
- (native-inputs (list dune))
- (home-page "https://github.com/hesterjeng/kerdaml")
- (synopsis "Univariate kernel density estimation for OCaml")
- (description
-  "kerdaml is a standalone univariate kernel density estimation library for OCaml.
-It provides Gaussian KDE with Scott, Silverman, and fixed bandwidth selection,
-mode finding, and an indicator-style API for sliding-window computation over
-time series data.")
- (license license:gpl3+)))
-
 (define-public ocaml-tacaml
 (package
  (name "ocaml-tacaml")
@@ -324,7 +302,6 @@ rolling statistics, monthly returns, and various performance tear sheets.")
    ocaml-graph
    ocaml-eio-main
    ocaml-tacaml
-   ocaml-kerdaml
    ocaml-fileutils
    ocaml-yojson
    ocaml-uuidm
