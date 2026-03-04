@@ -129,7 +129,7 @@ to be used for other repos."
  (source (github-tag-origin "kerdaml"
                             "https://github.com/hesterjeng/kerdaml"
                             version
-                            "1ifn2ivrvfanv913pf0pz3a0cwl76cpdcb2dap1xdl3g547v1jkb"
+                            "16lm74nn6mra8fsbd7yx8nfxwk7bni5vn0j5ik9sna46x6c6zs0d"
                             "v"))
  (build-system dune-build-system)
  (arguments
