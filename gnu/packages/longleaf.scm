@@ -125,11 +125,11 @@ to be used for other repos."
 (define-public ocaml-kerdaml
 (package
  (name "ocaml-kerdaml")
- (version "0.2.0")
+ (version "0.3.0")
  (source (github-tag-origin "kerdaml"
                             "https://github.com/hesterjeng/kerdaml"
                             version
-                            "16lm74nn6mra8fsbd7yx8nfxwk7bni5vn0j5ik9sna46x6c6zs0d"
+                            "17s5zhq2r4bidx0k5day1wj6gcn5fzxza4pm6g9dkzcg78nnm0cg"
                             "v"))
  (build-system dune-build-system)
  (arguments
