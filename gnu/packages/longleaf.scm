@@ -10,6 +10,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
@@ -120,6 +121,37 @@ to be used for other repos."
      "Collection of concurent-safe data structures for Multicore OCaml")
     (description #f)
     (license license:isc)))
+
+;; Minimal nlopt - C library only, no guile/octave/python/swig bindings
+(define-public nlopt
+  (package
+    (name "nlopt")
+    (version "2.10.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stevengj/nlopt/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "04257r7a1bjmm6hznf9v6fimz2p93dk745sf89wmxzhg3rh0ak44"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       (list "-DNLOPT_GUILE=OFF"
+             "-DNLOPT_PYTHON=OFF"
+             "-DNLOPT_OCTAVE=OFF"
+             "-DNLOPT_MATLAB=OFF"
+             "-DNLOPT_SWIG=OFF"
+             "-DNLOPT_TESTS=OFF")))
+    (home-page "http://ab-initio.mit.edu/wiki/")
+    (synopsis "Library for nonlinear optimization")
+    (description "NLopt is a library for nonlinear optimization, providing a
+common interface for a number of different free optimization routines available
+online as well as original implementations of various other algorithms.
+This is a minimal build with only the C library, no language bindings.")
+    (license license:lgpl2.1+)))
 
 ;; tacaml - OCaml bindings for TA-Lib
 (define-public ocaml-tacaml
