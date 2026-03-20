@@ -34,6 +34,9 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages emacs)
+  #:use-module (gnu packages emacs-xyz)
+  #:use-module (guix build-system emacs)
   )
 
 (define* (github-tag-origin name home-page version hash tag-prefix)
@@ -398,3 +401,79 @@ upstream WebSocket connection, reducing API usage and connection overhead.
 The relay speaks the Massive protocol natively, making it a drop-in replacement
 for direct Massive connections.")
  (license license:gpl3+)))
+
+;;; Emacs Packages
+
+;; shell-maker 0.90.1 (upstream Guix has 0.84.9, agent-shell needs 0.90.1)
+(define-public emacs-shell-maker-latest
+  (let ((commit "55f829d179608a3c4b11e86427713d5be7c4bb58")
+        (revision "0"))
+    (package
+      (name "emacs-shell-maker-latest")
+      (version (git-version "0.90.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xenodium/shell-maker")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1qdgay3gh8nnimmhm9zyypfg5li4421my8gm725ixbb0giaz4p5l"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/xenodium/shell-maker")
+      (synopsis "Create Emacs shells backed by LLMs and other agents")
+      (description
+       "Shell Maker is a convenience wrapper around comint-mode for building
+interactive shells in Emacs.  Includes markdown-overlays for rendering
+markdown in buffers.")
+      (license license:gpl3+))))
+
+;; acp.el - Agent Client Protocol implementation for Emacs
+(define-public emacs-acp
+  (package
+    (name "emacs-acp")
+    (version "0.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xenodium/acp.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l3zjsfzwz6iy6lk4pq0385ycppwk5cdxk0is1kllysx084kfw9z"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/xenodium/acp.el")
+    (synopsis "Agent Client Protocol implementation for Emacs")
+    (description
+     "acp.el is a UI-agnostic Emacs Lisp implementation of the Agent Client
+Protocol (ACP), a JSON-RPC 2.0 protocol over stdio for communicating with
+AI coding agents like Claude, Gemini, and others.")
+    (license license:gpl3+)))
+
+;; agent-shell - Native Emacs shell for AI coding agents via ACP
+(define-public emacs-agent-shell
+  (package
+    (name "emacs-agent-shell")
+    (version "0.50.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xenodium/agent-shell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0njajpz51pbz4hqaq7lcvwaypilq1c9sdxsk6sdxgk1xpivqlxfb"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-shell-maker-latest emacs-acp))
+    (home-page "https://github.com/xenodium/agent-shell")
+    (synopsis "Native Emacs shell for AI coding agents")
+    (description
+     "agent-shell is a comint-based interactive shell for Emacs that
+communicates with AI coding agents via the Agent Client Protocol.  Supports
+Claude, Gemini, Goose, Cursor, and other ACP-compatible agents.  Renders
+output in native Emacs buffers with markdown overlays - no terminal
+emulation required.")
+    (license license:gpl3+)))
