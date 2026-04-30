@@ -4123,41 +4123,6 @@ to which allows adding and looking up bindings in a type safe manner.")
     (license license:lgpl2.1)
     ))
 
-(define-public ocaml-nlopt
-  (package
-    (name "ocaml-nlopt")
-    (version "0.7")
-    (home-page "https://github.com/mkur/nlopt-ocaml"
-               )
-    (source
-     (github-tag-origin
-      name home-page version "04j0a251wxvak7g5v5p2w2xz9csjcac88p1g4ryj56kvf7adnd7r"
-      "release-"
-      ))
-    (build-system dune-build-system)
-    (native-inputs (list nlopt))
-    (synopsis "OCaml bindings to the NLOpt optimization library ")
-    (description "nlopt-ocaml implements OCaml bindings to the NLOpt optimization library.")
-    (license license:lgpl2.1)
-    ))
-(define-public ocaml-nlopt
-  (package
-    (name "ocaml-nlopt")
-    (version "0.7")
-    (home-page "https://github.com/mkur/nlopt-ocaml"
-               )
-    (source
-     (github-tag-origin
-      name home-page version "04j0a251wxvak7g5v5p2w2xz9csjcac88p1g4ryj56kvf7adnd7r"
-      "release-"
-      ))
-    (build-system dune-build-system)
-    (native-inputs (list nlopt))
-    (synopsis "OCaml bindings to the NLOpt optimization library ")
-    (description "nlopt-ocaml implements OCaml bindings to the NLOpt optimization library.")
-    (license license:lgpl2.1)
-    ))
-
 (define-public ocaml-dream-mirage
 (package
  (name "ocaml-dream-mirage")
