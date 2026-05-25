@@ -2191,10 +2191,8 @@ to the other.")
                   (replace
                    'configure
                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                     (chmod "configure" #o755)
                      (let ((out (assoc-ref outputs "out")))
-                       (invoke
-                        "./configure"
+                       (invoke "sh" "./configure"
                         "-bindir" (string-append out "/bin")
                         "-config" (string-append out "/etc/ocamfind.conf")
                         "-mandir" (string-append out "/share/man")
