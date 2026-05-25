@@ -470,7 +470,7 @@ patch-/bin/sh-references: ~a: changing `\"/bin/sh\"' to `~a'~%"
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (mandir (string-append out "/share/man")))
-               (invoke "./configure"
+               (invoke "sh" "./configure"
                        "--prefix" out
                        "--mandir" mandir))))
          (replace 'build
@@ -597,7 +597,7 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
                        (mandir (string-append out "/share/man")))
                   ;; Custom configure script doesn't recognize
                   ;; --prefix=<PREFIX> syntax (with equals sign).
-                  (invoke "./configure"
+                  (invoke "sh" "./configure"
                           "--prefix" out
                           "--mandir" mandir))))))))
     (native-inputs
@@ -1868,7 +1868,7 @@ be maintained and distributed separately in the camlpstreams package.")
                            (mandir (string-append out "/share/man")))
                       ;; Custom configure script doesn't recognize
                       ;; --prefix=<PREFIX> syntax (with equals sign).
-                      (invoke "./configure"
+                      (invoke "sh" "./configure"
                               "--prefix" out
                               "--mandir" mandir))))
          (add-before 'build 'fix-/bin-references
@@ -2408,7 +2408,7 @@ files in these formats.")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda _ (invoke "./configure")))
+           (lambda _ (invoke "sh" "./configure")))
          (add-after 'install 'move-sublibs
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -2559,7 +2559,7 @@ full_split, cut, rcut, etc..")
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p "src/dune")
-             (invoke "./configure")
+             (invoke "sh" "./configure")
              #t)))))
     (home-page "https://github.com/ocaml/dune")
     (synopsis "OCaml build system")
@@ -8433,7 +8433,7 @@ Format module of the OCaml standard library.")
              (let ((out (assoc-ref outputs "out")))
                (substitute* "make/OCamlMakefile"
                  (("/bin/sh") (which "bash")))
-               (invoke "./configure" "--prefix" out "--ocaml-libdir"
+               (invoke "sh" "./configure" "--prefix" out "--ocaml-libdir"
                        (string-append out "/lib/ocaml/site-lib")))))
        (add-after 'build 'build-ocaml
          (lambda* (#:key outputs #:allow-other-keys)
@@ -8731,7 +8731,7 @@ necessary set of rewriters.")
                 (substitute* (find-files "." ".")
                   (("Utils.Make_binable1\\(") "Utils.Make_binable1_without_uuid(")
                   (("Utils.Make_binable\\(") "Utils.Make_binable_without_uuid("))
-                (invoke "./configure" "--prefix"
+                (invoke "sh" "./configure" "--prefix"
                         (assoc-ref outputs "out")
                         "--libdir"
                         (string-append
