@@ -2191,6 +2191,7 @@ to the other.")
                   (replace
                    'configure
                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (chmod "configure" #o755)
                      (let ((out (assoc-ref outputs "out")))
                        (invoke
                         "./configure"
