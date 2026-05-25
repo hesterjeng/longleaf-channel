@@ -2188,6 +2188,9 @@ to the other.")
        #:parallel-build? #f
        #:make-flags (list "all" "opt")
        #:phases (modify-phases %standard-phases
+                  (add-before 'configure 'fix-configure-perms
+                    (lambda _
+                      (chmod "configure" #o755)))
                   (replace
                    'configure
                    (lambda* (#:key inputs outputs #:allow-other-keys)
