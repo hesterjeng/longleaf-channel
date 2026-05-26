@@ -1328,14 +1328,14 @@ implementation.")
      ;; tests failed, unknown scheme?
        #:tests? #f
        #:package "cohttp-lwt-unix"))
-    (version "6.1.1")
+    (version "6.2.1")
     (source
      (origin
        (method url-fetch)
        (uri
-        "https://github.com/mirage/ocaml-cohttp/releases/download/v6.1.1/cohttp-6.1.1.tbz")
+        "https://github.com/mirage/ocaml-cohttp/releases/download/v6.2.1/cohttp-6.2.1.tbz")
        (sha256
-        (base32 "1728dhv143pmgz6r2mvbhxia7f8gxay3dw34b58hnfiv41b0qhkb"))))
+        (base32 "0px6crfizpma3v6q3b1ny1r8fy9v4fw7h1nr7kfd2hilfr3h4235"))))
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-http
                              ocaml-cohttp
@@ -2537,7 +2537,7 @@ full_split, cut, rcut, etc..")
 (define-public dune-bootstrap
   (package
     (name "dune")
-    (version "3.20.2")
+    (version "3.23.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2546,7 +2546,7 @@ full_split, cut, rcut, etc..")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z4ji0jwwwxsx0ffw0klnkvaql8m2mqyi9h308y23waaf8dr3g94"))))
+                "14l5l23vg1kbsp0w9066kyva85hz629frdi10b5h0f7v0jfdnggl"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; require odoc
@@ -3382,14 +3382,16 @@ dates and times.")
 (define-public ocaml-cmdliner
   (package
     (name "ocaml-cmdliner")
-    (version "2.0.0")
+    (version "2.1.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://erratique.ch/software/cmdliner/releases/"
-                                  "cmdliner-" version ".tbz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dbuenzli/cmdliner")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "10l56xl7ibhbjljvfbz9fji3py5k9rrdffqdyvgsmyrn3iiplm2f"))))
+                "1ll9zc88sg1cjr0kgaqkkvi0850bagmwjs3f5b1fykicb6fwf78h"))))
     (build-system dune-build-system)
     ;; (propagated-inputs
     ;;  (list ocaml-result))
@@ -6324,11 +6326,11 @@ accesses to the store.")
 (define-public ocaml-tls
   (package
     (name "ocaml-tls")
-    (version "2.0.3")
+    (version "2.1.0")
     (home-page "https://github.com/mirleft/ocaml-tls")
     (source
      (github-tag-origin
-      name home-page version "1w188b4c3cpfzgxyhil6g319r7y3hk9lw6wyf1881hwxsf6kprqq"
+      name home-page version "0fq1349yhhwz3ab1y0ls19qchqlqnqqkvwbc48jwgq74088jxmcg"
       "v"
       ))
     (arguments
@@ -9505,7 +9507,7 @@ to a Yojson.Safe value.")
 (define-public ocaml-merlin-lib
   (package
     (name "ocaml-merlin-lib")
-    (version "5.6-503")
+    (version "5.7.1-504")
     (source
      (origin
        (method git-fetch)
@@ -9514,8 +9516,7 @@ to a Yojson.Safe value.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "164mcl6rlaj8y6ia9l2zfc9pwq6x8kv3q62vkidjxm313lyq858k"
-                ))))
+        (base32 "1qi0rfka66gsq6aq4n18xg872b58yn2n6yh6g11s1z0dwjqwgwj2"))))
     (build-system dune-build-system)
     (arguments '(#:package "merlin-lib"
                  #:tests? #f))          ; no tests
@@ -12550,7 +12551,7 @@ defined in OCaml 4.12.0.")
 (define-public ocamlformat
   (package
     (name "ocamlformat")
-    (version "0.27.0")
+    (version "0.29.0")
     (source
       (origin
         (method git-fetch)
@@ -12560,7 +12561,7 @@ defined in OCaml 4.12.0.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "0wdzv54s31lckkkwf776j7npcd7i2sscdy9asiaxy50vgi4y7kbx"))
+            "107pprrxyvxv23pp0753k82qydhjz5jwir209mgs3r93vhn0fd7v"))
         (modules '((guix build utils)))
         ;; (snippet
         ;;  #~(begin
@@ -12857,7 +12858,7 @@ up to OCaml 4.08.")
 (define-public ocaml-http
   (package
     (name "ocaml-http")
-    (version "6.1.1")
+    (version "6.2.1")
     (build-system dune-build-system)
     (arguments '(#:package "http"
                  #:tests? #f))
@@ -12865,7 +12866,7 @@ up to OCaml 4.08.")
     (source
      (github-tag-origin
       name home-page version
-      "1li96x3s287a092nb9d0panr55298a9dd3v1s9igdxllsb789l9a"
+      "1cr4195ymzrclxg30fdrl3zykz1y2an07i66ahf587lh2sg55hfx"
       "v"
       ))
     (native-inputs
@@ -12883,7 +12884,7 @@ libraries.")
 (define-public ocaml-cohttp
   (package
     (name "ocaml-cohttp")
-    (version "6.1.1")
+    (version "6.2.1")
     (build-system dune-build-system)
     (arguments '(#:package "cohttp"
                  #:tests? #f))
@@ -12891,7 +12892,7 @@ libraries.")
     (source
      (github-tag-origin
       name home-page version
-      "1li96x3s287a092nb9d0panr55298a9dd3v1s9igdxllsb789l9a"
+      "1cr4195ymzrclxg30fdrl3zykz1y2an07i66ahf587lh2sg55hfx"
       "v"
       ))
     (propagated-inputs
@@ -12920,14 +12921,14 @@ libraries.")
 (define-public ocaml-cohttp-lwt
   (package
     (name "ocaml-cohttp-lwt")
-    (version "6.1.1")
+    (version "6.2.1")
     (build-system dune-build-system)
     (arguments '(#:package "cohttp-lwt"))
     (home-page "https://github.com/mirage/ocaml-cohttp")
     (source
      (github-tag-origin
       name home-page version
-      "1li96x3s287a092nb9d0panr55298a9dd3v1s9igdxllsb789l9a"
+      "1cr4195ymzrclxg30fdrl3zykz1y2an07i66ahf587lh2sg55hfx"
       "v"
       ))
     (propagated-inputs
@@ -12960,7 +12961,7 @@ libraries.")
 (define-public ocaml-cohttp-eio
   (package
     (name "ocaml-cohttp-eio")
-    (version "6.1.1")
+    (version "6.2.1")
     (build-system dune-build-system)
     (arguments '(#:package "cohttp-eio"
                  #:tests? #f
@@ -12969,7 +12970,7 @@ libraries.")
     (source
      (github-tag-origin
       name home-page version
-      "1li96x3s287a092nb9d0panr55298a9dd3v1s9igdxllsb789l9a"
+      "1cr4195ymzrclxg30fdrl3zykz1y2an07i66ahf587lh2sg55hfx"
       "v"
       ))
     (propagated-inputs
