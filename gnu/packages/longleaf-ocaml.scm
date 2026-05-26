@@ -9681,7 +9681,7 @@ Atom.")
 (define-public ocaml-lsp-server
   (package
     (name "ocaml-lsp-server")
-    (version "1.23.1")
+    (version "1.26.0")
     (home-page "https://github.com/ocaml/ocaml-lsp")
     (source (origin
               (method git-fetch)
@@ -9690,7 +9690,7 @@ Atom.")
                 (commit version)))
               (sha256
                (base32
-                "1h02bgf3glf6d6mghk32ds8xm6a7h575f1zf9qkgr6y946rh0760"
+                "0s22w4zc0m5q5w73gpi7waai4hidsgbccylflfsnhdfqm27dmk83"
                 ))))
     (build-system dune-build-system)
     (arguments '(#:tests? #f)) ; tests are failing for v1.17
