@@ -65,7 +65,7 @@
 
 (define %ocaml-build-system-modules
   ;; Build-side modules imported by default.
-  `((guix build ocaml-build-system)
+  `((guix build longleaf-ocaml-build-system)
     ,@%default-gnu-imported-modules))
 
 (define (default-ocaml)
@@ -254,11 +254,11 @@ pre-defined variants."
                       (strip-binaries? #t)
                       (strip-flags %strip-flags)
                       (strip-directories %strip-directories)
-                      (phases '(@ (guix build ocaml-build-system)
+                      (phases '(@ (guix build longleaf-ocaml-build-system)
                                   %standard-phases))
                       (system (%current-system))
                       (imported-modules %ocaml-build-system-modules)
-                      (modules '((guix build ocaml-build-system)
+                      (modules '((guix build longleaf-ocaml-build-system)
                                  (guix build utils))))
   "Build SOURCE using OCAML, and with INPUTS. This assumes that SOURCE
 provides a 'setup.ml' file as its build system."
