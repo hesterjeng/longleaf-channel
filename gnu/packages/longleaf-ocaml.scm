@@ -3384,14 +3384,12 @@ dates and times.")
     (name "ocaml-cmdliner")
     (version "2.1.1")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/dbuenzli/cmdliner")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "https://erratique.ch/software/cmdliner/releases/"
+                                  "cmdliner-" version ".tbz"))
               (sha256
                (base32
-                "1ll9zc88sg1cjr0kgaqkkvi0850bagmwjs3f5b1fykicb6fwf78h"))))
+                "1dnn42hhmndlgk32m3yr3r1i0ic348l9iwbqh53lrxglvv8kif85"))))
     (build-system dune-build-system)
     ;; (propagated-inputs
     ;;  (list ocaml-result))
