@@ -34,11 +34,11 @@
 
 (define* (fix-script-permissions #:key #:allow-other-keys)
   "Make scripts and configure files executable after unpack."
+  (when (file-exists? "configure")
+    (chmod "configure" #o755))
   (for-each (lambda (file)
               (chmod file #o755))
-            (append
-             (find-files "." "\\.sh$" #:directories? #f)
-             (find-files "." "^configure$" #:directories? #f)))
+            (find-files "." "\\.sh$"))
   #t)
 
 (define* (ocaml-findlib-environment #:key outputs #:allow-other-keys)
