@@ -2726,6 +2726,28 @@ about.")
     (synopsis "Dune dynamic types")
     (description "This library represents dynamic types in OCaml.")))
 
+(define-public dune-fs-io
+  (package
+    (inherit dune-ordering)
+    (name "dune-fs-io")
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "fs-io"
+       #:tests? #f))
+    (synopsis "File system IO library from Dune")
+    (description "This library provides file system IO primitives used by Dune.")))
+
+(define-public dune-top-closure
+  (package
+    (inherit dune-ordering)
+    (name "dune-top-closure")
+    (build-system dune-build-system)
+    (arguments
+     `(#:package "top-closure"
+       #:tests? #f))
+    (synopsis "Top closure algorithm from Dune")
+    (description "This library provides the top closure algorithm used by Dune.")))
+
 (define-public dune-stdune
   (package
     (inherit dune-ordering)
@@ -2735,7 +2757,7 @@ about.")
      `(#:package "stdune"
        ;; Tests have a cyclic dependency on itself
        #:tests? #f))
-    (propagated-inputs (list dune-dyn ocaml-pp))
+    (propagated-inputs (list dune-dyn dune-fs-io dune-top-closure ocaml-pp))
     (synopsis "Unstable standard library from Dune")
     (description "This library implements the standard functions used by Dune.")))
 
