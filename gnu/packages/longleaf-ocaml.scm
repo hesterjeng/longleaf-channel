@@ -3391,13 +3391,31 @@ dates and times.")
                (base32
                 "1dnn42hhmndlgk32m3yr3r1i0ic348l9iwbqh53lrxglvv8kif85"))))
     (build-system ocaml-build-system)
+    (native-inputs
+     (list ocaml-findlib))
     (arguments
      `(#:tests? #f
-       #:make-flags ,#~(list (string-append "PREFIX=" #$output)
-                             (string-append "LIBDIR=" #$output "/lib/ocaml/site-lib"))
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))
+         (delete 'configure)
+         (replace 'build
+           (lambda _
+             (invoke "make" "all")
+             #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((lib (string-append (assoc-ref outputs "out")
+                                       "/lib/ocaml/site-lib")))
+               (mkdir-p lib)
+               (invoke "ocamlfind" "install" "cmdliner"
+                       "cmdliner.opam"
+                       "_build/install/default/lib/cmdliner/META"
+                       "_build/install/default/lib/cmdliner/cmdliner.a"
+                       "_build/install/default/lib/cmdliner/cmdliner.cma"
+                       "_build/install/default/lib/cmdliner/cmdliner.cmxa"
+                       "_build/install/default/lib/cmdliner/cmdliner.cmxs"
+                       "_build/install/default/lib/cmdliner/cmdliner.cmi"
+                       "_build/install/default/lib/cmdliner/cmdliner.mli"))))))))
     (home-page "https://erratique.ch/software/cmdliner")
     (synopsis "Declarative definition of command line interfaces for OCaml")
     (description "Cmdliner is a module for the declarative definition of command
@@ -7172,6 +7190,13 @@ without a complete in-memory representation of the data.")
          (base32
           "1zrf8sbh7m828bkj299kb0k3qknhafj7gnpiclc67qrwqxkmnmzg"))))
     (build-system dune-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'disable-warn-error-57
+           (lambda _
+             (setenv "OCAMLPARAM" "_,w=-57")
+             #t)))))
     (propagated-inputs
      (list ocaml-cmdliner))
     (home-page "https://www.typerex.org/ocp-indent.html")
