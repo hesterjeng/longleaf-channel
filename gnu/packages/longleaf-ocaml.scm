@@ -3408,14 +3408,13 @@ dates and times.")
                                        "/lib/ocaml/site-lib")))
                (mkdir-p lib)
                (invoke "ocamlfind" "install" "cmdliner"
-                       "cmdliner.opam"
-                       "_build/install/default/lib/cmdliner/META"
-                       "_build/install/default/lib/cmdliner/cmdliner.a"
-                       "_build/install/default/lib/cmdliner/cmdliner.cma"
-                       "_build/install/default/lib/cmdliner/cmdliner.cmxa"
-                       "_build/install/default/lib/cmdliner/cmdliner.cmxs"
-                       "_build/install/default/lib/cmdliner/cmdliner.cmi"
-                       "_build/install/default/lib/cmdliner/cmdliner.mli"))))))))
+                       "pkg/META"
+                       "_build/src/cmdliner.a"
+                       "_build/src/cmdliner.cma"
+                       "_build/src/cmdliner.cmxa"
+                       "_build/src/cmdliner.cmxs"
+                       "_build/src/cmdliner.cmi"
+                       "_build/src/cmdliner.mli")))))))
     (home-page "https://erratique.ch/software/cmdliner")
     (synopsis "Declarative definition of command line interfaces for OCaml")
     (description "Cmdliner is a module for the declarative definition of command
