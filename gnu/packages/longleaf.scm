@@ -100,11 +100,8 @@ to be used for other repos."
  (arguments
   ;; No tests.
   '(#:tests? #f))
-    ;; (propagated-inputs (list ocaml-backoff ocaml-multicore-magic
-    ;;                          ocaml-sherlodoc ocaml-odoc))
-    (native-inputs (list
-			 ocaml-multicore-magic ocaml-backoff
-			 ))
+    (propagated-inputs (list ocaml-backoff ocaml-multicore-magic))
+
     (home-page "https://github.com/ocaml-multicore/saturn")
     (synopsis
      "Collection of concurent-safe data structures for Multicore OCaml")
