@@ -137,7 +137,14 @@ provides a 'setup.ml' file as its build system."
                                     '#$inputs)
                       #:search-paths '#$(map search-path-specification->sexp
                                              search-paths)
-                      #:phases #$phases
+                      #:phases (modify-phases #$phases
+                                 (add-after 'unpack 'fix-script-permissions
+                                   (lambda _
+                                     (when (file-exists? "configure")
+                                       (chmod "configure" #o755))
+                                     (for-each (lambda (f) (chmod f #o755))
+                                               (find-files "." "\\.sh$"))
+                                     #t)))
                       #:test-flags #$test-flags
                       #:build-flags #$build-flags
                       #:out-of-source? #$out-of-source?

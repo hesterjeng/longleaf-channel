@@ -65,7 +65,7 @@
 
 (define %ocaml-build-system-modules
   ;; Build-side modules imported by default.
-  `((guix build longleaf-ocaml-build-system)
+  `((guix build ocaml-build-system)
     ,@%default-gnu-imported-modules))
 
 (define (default-ocaml)
@@ -254,11 +254,11 @@ pre-defined variants."
                       (strip-binaries? #t)
                       (strip-flags %strip-flags)
                       (strip-directories %strip-directories)
-                      (phases '(@ (guix build longleaf-ocaml-build-system)
+                      (phases '(@ (guix build ocaml-build-system)
                                   %standard-phases))
                       (system (%current-system))
                       (imported-modules %ocaml-build-system-modules)
-                      (modules '((guix build longleaf-ocaml-build-system)
+                      (modules '((guix build ocaml-build-system)
                                  (guix build utils))))
   "Build SOURCE using OCAML, and with INPUTS. This assumes that SOURCE
 provides a 'setup.ml' file as its build system."
@@ -277,7 +277,14 @@ provides a 'setup.ml' file as its build system."
                                      '#$inputs)
                        #:search-paths '#$(map search-path-specification->sexp
                                               search-paths)
-                       #:phases #$phases
+                       #:phases (modify-phases #$phases
+                                  (add-after 'unpack 'fix-script-permissions
+                                    (lambda _
+                                      (when (file-exists? "configure")
+                                        (chmod "configure" #o755))
+                                      (for-each (lambda (f) (chmod f #o755))
+                                                (find-files "." "\\.sh$"))
+                                      #t)))
                        #:configure-flags #$configure-flags
                        #:test-flags #$test-flags
                        #:make-flags #$make-flags
