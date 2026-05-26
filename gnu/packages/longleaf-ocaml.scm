@@ -1484,7 +1484,7 @@ This package provides a generic solver library which uses 0install's solver libr
 (define ocaml-opam-core
   (package
     (name "ocaml-opam-core")
-    (version "2.4.1")
+    (version "2.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1493,7 +1493,7 @@ This package provides a generic solver library which uses 0install's solver libr
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0php0b31cwyabhds477abk8qyz4whl3kncpbka4dynzpaf9xnqsm"))))
+                "10diw6wdl6v89kbvb8x22dbfacw1ikhl63hybyp2s7560450hygc"))))
     (build-system dune-build-system)
     (arguments `(#:package "opam-core"
                  ;; tests are run with the opam package
@@ -1517,7 +1517,7 @@ This package provides a generic solver library which uses 0install's solver libr
            ocaml-cppo
            ocaml-swhid-core
            ocaml-jsonm
-           ocaml-cmdliner-1.3
+           ocaml-cmdliner
            ocaml-sha
            ))
     (inputs (list bubblewrap ocaml-patch ocaml-uutf))
@@ -1550,7 +1550,7 @@ Git-friendly development workflow.")
     (native-inputs (list ocaml-opam-format
                          ;; ocaml-patch
                          ;; ocaml-uutf
-                         ocaml-cmdliner-1.3))
+                         ocaml-cmdliner))
     (inputs '())
     (propagated-inputs '())
     (arguments `(#:package "opam-installer"
@@ -1640,7 +1640,7 @@ OPAM.")
            ocaml-opam-repository
            ocaml-base64
            ocaml-re
-           ocaml-cmdliner-1.3))))
+           ocaml-cmdliner))))
 
 (define-public opam
   (package
@@ -3437,31 +3437,6 @@ dates and times.")
                        "_build/src/cmdliner.cmxs"
                        "_build/src/cmdliner.cmi"
                        "_build/src/cmdliner.mli")))))))
-    (home-page "https://erratique.ch/software/cmdliner")
-    (synopsis "Declarative definition of command line interfaces for OCaml")
-    (description "Cmdliner is a module for the declarative definition of command
-line interfaces.  It provides a simple and compositional mechanism to convert
-command line arguments to OCaml values and pass them to your functions.  The
-module automatically handles syntax errors, help messages and UNIX man page
-generation. It supports programs with single or multiple commands and respects
-most of the POSIX and GNU conventions.")
-    (license license:bsd-3)))
-
-(define-public ocaml-cmdliner-1.3
-  (package
-    (name "ocaml-cmdliner-1.3")
-    (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://erratique.ch/software/cmdliner/releases/"
-                                  "cmdliner-" version ".tbz"))
-              (sha256
-               (base32
-                "1fwc2rj6xfyihhkx4cn7zs227a74rardl262m2kzch5lfgsq10cf"))))
-    (build-system dune-build-system)
-    ;; (propagated-inputs
-    ;;  (list ocaml-result))
-    (arguments `(#:tests? #f))
     (home-page "https://erratique.ch/software/cmdliner")
     (synopsis "Declarative definition of command line interfaces for OCaml")
     (description "Cmdliner is a module for the declarative definition of command
@@ -12637,7 +12612,7 @@ defined in OCaml 4.12.0.")
     (propagated-inputs
       (list ocaml-version
             ocaml-base
-            ocaml-cmdliner-1.3
+            ocaml-cmdliner
             ocaml-dune-build-info
             ocaml-either
             ocaml-fix
