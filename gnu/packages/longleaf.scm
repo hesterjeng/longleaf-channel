@@ -19,6 +19,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages node)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages finance)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (guix build-system emacs)
