@@ -12946,6 +12946,7 @@ libraries.")
     (propagated-inputs
       (list ocaml-re
             ocaml-uri
+            ocaml-ipaddr
             ocaml-http
             ocaml-logs
             ocaml-uri-sexp
