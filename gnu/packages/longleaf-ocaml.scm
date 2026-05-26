@@ -309,19 +309,19 @@ functional, imperative and object-oriented styles of programming.")
                (base32
                 "05jhy9zn53v12rn3sg3vllqf5blv1gp7f06803npimc58crxy6rv"))))))
 
-;; (define-public ocaml-5.4
-;;   (package
-;;     (inherit ocaml-5.0)
-;;     (version "5.4.0")
-;;     (source (origin
-;;               (method git-fetch)
-;;               (uri (git-reference
-;;                     (url "https://github.com/ocaml/ocaml")
-;;                     (commit version)))
-;;               (file-name (git-file-name "ocaml" version))
-;;               (sha256
-;;                (base32
-;;                 "1xfay0q47kckxy6c7y7qx8lqs7x8hw6sjqyq0sx8x7q1lwggcgry"))))))
+(define-public ocaml-5.4
+  (package
+    (inherit ocaml-5.0)
+    (version "5.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ocaml/ocaml")
+                    (commit version)))
+              (file-name (git-file-name "ocaml" version))
+              (sha256
+               (base32
+                "0bpfwdfc7j53hb57arb6nxdj0ahkcxzkbj2ax90nvkjcyr96xcr3"))))))
 
 (define-public ocaml-4.14
   (package
@@ -605,7 +605,7 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)))))
 
-(define-public ocaml ocaml-5.3)
+(define-public ocaml ocaml-5.4)
 
 (define-public ocamlbuild
   (package
