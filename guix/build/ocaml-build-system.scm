@@ -21,7 +21,6 @@
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 ftw)
   #:export (%standard-phases
             ocaml-build))
 
@@ -36,13 +35,10 @@
 (define* (fix-script-permissions #:key #:allow-other-keys)
   "Make scripts and configure files executable after unpack."
   (for-each (lambda (file)
-              (when (and (file-exists? file)
-                         (not (file-is-directory? file)))
-                (chmod file #o755)))
+              (chmod file #o755))
             (append
-             (find-files "." "\\.sh$")
-             (find-files "." "^configure$")
-             (find-files "." "^Makefile$")))
+             (find-files "." "\\.sh$" #:directories? #f)
+             (find-files "." "^configure$" #:directories? #f)))
   #t)
 
 (define* (ocaml-findlib-environment #:key outputs #:allow-other-keys)
