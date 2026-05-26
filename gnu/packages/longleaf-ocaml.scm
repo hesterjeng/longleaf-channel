@@ -3390,10 +3390,14 @@ dates and times.")
               (sha256
                (base32
                 "1dnn42hhmndlgk32m3yr3r1i0ic348l9iwbqh53lrxglvv8kif85"))))
-    (build-system dune-build-system)
-    ;; (propagated-inputs
-    ;;  (list ocaml-result))
-    (arguments `(#:tests? #f))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:tests? #f
+       #:make-flags ,#~(list (string-append "PREFIX=" #$output)
+                             (string-append "LIBDIR=" #$output "/lib/ocaml/site-lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
     (home-page "https://erratique.ch/software/cmdliner")
     (synopsis "Declarative definition of command line interfaces for OCaml")
     (description "Cmdliner is a module for the declarative definition of command
