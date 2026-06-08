@@ -178,7 +178,17 @@ handling with Result types.")
 
 
 
-;; Full Longleaf package with all dependencies
+;; Full Longleaf package with all dependencies.
+;;
+;; DISABLED: the longleaf application package now lives in the app repo at
+;; ~/Projects/longleaf/longleaf.scm (single source of truth for the build
+;; recipe). The droplet deploy loads that file directly (see
+;; droplet-image/longleaf-package.scm), so this channel copy is redundant and
+;; had drifted (missing gmp, plus several ocaml-* inputs). This channel still
+;; provides the longleaf-dune build system and the ocaml-* dependency packages
+;; that the app repo's recipe relies on -- only the application package def is
+;; retired here.
+#|
 (define-public longleaf
 (package
  (name "longleaf")
@@ -230,6 +240,7 @@ as functors for maximum code reuse and type safety.
 
 The platform includes tacaml for TA-Lib technical analysis bindings.")
  (license license:gpl3+)))
+|#
 
 ;; Massive Relay - WebSocket relay for sharing Massive API connections
 (define-public massive-relay
