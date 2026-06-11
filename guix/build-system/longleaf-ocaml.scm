@@ -34,6 +34,7 @@
             strip-ocaml4.09-variant
             package-with-ocaml5.0
             strip-ocaml5.0-variant
+            package-with-explicit-ocaml
             default-findlib
             default-ocaml
             lower
@@ -108,7 +109,8 @@
   (@* (gnu packages longleaf-ocaml) ocaml5.0-dune))
 
 (define* (package-with-explicit-ocaml ocaml findlib dune old-prefix new-prefix
-                                       #:key variant-property)
+                                       #:key variant-property
+                                       (extra-transform identity))
   "Return a procedure of one argument, P.  The procedure creates a package
 with the same fields as P, which is assumed to use OCAML-BUILD-SYSTEM, such
 that it is compiled with OCAML and FINDLIB instead.  The inputs are changed
@@ -140,7 +142,8 @@ pre-defined variants."
      ;; Otherwise build the new package object graph.
      ((or (eq? (package-build-system p) ocaml-build-system)
           (eq? (package-build-system p) (default-dune-build-system)))
-      (package
+      (extra-transform
+       (package
         (inherit p)
         (location (package-location p))
         (name (let ((name (package-name p)))
@@ -159,7 +162,7 @@ pre-defined variants."
                                        ,@(if (eq? (package-build-system p)
                                                   (default-dune-build-system))
                                              `(#:dune ,dune)
-                                             '())))))))
+                                             '()))))))))
      (else p)))
 
   (define (cut? p)
