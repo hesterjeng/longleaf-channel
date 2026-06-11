@@ -19,6 +19,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages node)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
@@ -264,6 +265,11 @@ The platform includes tacaml for TA-Lib technical analysis bindings.")
  (build-system dune-build-system)
  (arguments
   '(#:tests? #f))
+ ;; gmp: a crypto dep (mirage-crypto-pk -> zarith) links libgmp, so the final
+ ;; `dune build' link step emits `-lgmp'. It must be a regular input so its
+ ;; lib/ is on the C linker search path -- propagated OCaml libs don't carry
+ ;; the C library. (Same omission that the disabled longleaf def had above.)
+ (inputs (list gmp))
  (propagated-inputs
   (list
    ocaml-eio-main
