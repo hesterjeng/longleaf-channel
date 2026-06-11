@@ -381,6 +381,26 @@ functional, imperative and object-oriented styles of programming.")
            (lambda _
              (substitute* '("runtime/dune" "runtime4/dune")
                (("SAK_LINK=cc") "SAK_LINK=gcc"))))
+         ;; Our pinned snapshot (5.2.0minus-40) predates the `_nonzero_'
+         ;; clz/ctz builtins that every released Jane Street
+         ;; ocaml_intrinsics_kernel assumes the compiler provides (e.g.
+         ;; caml_int32_clz_nonzero_unboxed_to_untagged).  These are just
+         ;; clz/ctz with a "caller promises arg <> 0" optimisation hint;
+         ;; our Cclz/Cctz carry no such hint, so each `_nonzero_' name can
+         ;; share the identical match arm as its plain sibling -- always
+         ;; correct (the plain lowering handles nonzero inputs the same way).
+         ;; One regex rewrites every clz/ctz arm into an or-pattern that also
+         ;; accepts the `_nonzero_' name.  Done as a Guix phase so the source
+         ;; checkout stays untouched.
+         (add-after 'unpack 'oxcaml-add-nonzero-clz-ctz-builtins
+           (lambda _
+             (substitute* "backend/cmm_builtins.ml"
+               (("\"caml_([a-z0-9]+)_(clz|ctz)_([a-z]+)_to_untagged\" ->"
+                 all kind op repr)
+                (string-append
+                 "\"caml_" kind "_" op "_" repr "_to_untagged\"\n"
+                 "  | \"caml_" kind "_" op "_nonzero_" repr
+                 "_to_untagged\" ->")))))
          ;; `make` drives dune under the hood, which needs a writable HOME and
          ;; must not touch a shared cache in the build container.
          (add-before 'configure 'set-build-env
@@ -3384,9 +3404,11 @@ spans without being subject to operating system calendar time adjustments.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         ;; Build the core Mtime module directly with ocamlfind (topkg/ocamlbuild
-         ;; broken under oxcaml).  The mtime.clock sublib (C stub) is left as a
-         ;; dormant META stanza; build it if a consumer needs it.
+         ;; Build the Mtime modules directly with ocamlfind (topkg/ocamlbuild
+         ;; broken under oxcaml; plain ocamlfind works on both).  Core Mtime
+         ;; plus mtime.clock (the C-stub monotonic clock in src/clock/; eio.unix
+         ;; needs it).  mtime.clock.os is a deprecated alias that resolves for
+         ;; free once mtime.clock exists.
          (replace 'build
            (lambda _
              (with-directory-excursion "src"
@@ -3397,13 +3419,41 @@ spans without being subject to operating system calendar time adjustments.")
                (invoke "ocamlfind" "ocamlopt" "-a" "-o" "mtime.cmxa"
                        "mtime.cmx")
                (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
-                       "-o" "mtime.cmxs" "mtime.cmxa"))))
+                       "-o" "mtime.cmxs" "mtime.cmxa")
+               ;; mtime.clock: C stub + single module Mtime_clock, requires
+               ;; mtime.  The C stub .o lands in cwd (src/); ocamlmklib builds
+               ;; lib/dll mtime_clock_stubs; the archives record -lmtime_clock_-
+               ;; stubs so consumers link it.  exists_if checks cma+cmxa only,
+               ;; so cmxs is unnecessary.
+               (invoke "ocamlfind" "ocamlc" "-c" "clock/mtime_clock_stubs.c")
+               (invoke "ocamlfind" "ocamlc" "-c" "-I" "." "-I" "clock"
+                       "clock/mtime_clock.mli")
+               (invoke "ocamlfind" "ocamlc" "-c" "-I" "." "-I" "clock"
+                       "clock/mtime_clock.ml")
+               (invoke "ocamlfind" "ocamlopt" "-c" "-I" "." "-I" "clock"
+                       "clock/mtime_clock.ml")
+               (invoke "ocamlmklib" "-o" "clock/mtime_clock_stubs"
+                       "mtime_clock_stubs.o")
+               (invoke "ocamlfind" "ocamlc" "-a" "-o" "clock/mtime_clock.cma"
+                       "clock/mtime_clock.cmo"
+                       "-dllib" "-lmtime_clock_stubs"
+                       "-cclib" "-lmtime_clock_stubs")
+               (invoke "ocamlfind" "ocamlopt" "-a" "-o" "clock/mtime_clock.cmxa"
+                       "clock/mtime_clock.cmx" "-cclib" "-lmtime_clock_stubs"))))
          (replace 'install
            (lambda _
+             ;; Drop the `directory = "clock"' line; we install flat.
+             (substitute* "pkg/META"
+               (("directory = .*") ""))
              (with-directory-excursion "src"
                (invoke "ocamlfind" "install" "mtime" "../pkg/META"
                        "mtime.cma" "mtime.cmxa" "mtime.cmxs" "mtime.a"
-                       "mtime.cmi" "mtime.cmx" "mtime.mli")))))))))
+                       "mtime.cmi" "mtime.cmx" "mtime.mli"
+                       "clock/mtime_clock.cma" "clock/mtime_clock.cmxa"
+                       "clock/mtime_clock.a" "clock/mtime_clock.cmi"
+                       "clock/mtime_clock.cmx" "clock/mtime_clock.mli"
+                       "clock/libmtime_clock_stubs.a"
+                       "clock/dllmtime_clock_stubs.so")))))))))
 
 (define-public ocaml-calendar
   (package
@@ -3565,10 +3615,12 @@ most of the POSIX and GNU conventions.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         ;; Build the core Fmt module directly with ocamlfind (topkg/ocamlbuild
-         ;; broken under oxcaml).  The fmt.tty/fmt.cli/fmt.top sub-libraries are
-         ;; left as dormant META stanzas; build them here if a consumer needs
-         ;; them (tty needs unix, cli needs cmdliner).
+         ;; Build the Fmt modules directly with ocamlfind (topkg/ocamlbuild is
+         ;; broken under oxcaml; plain ocamlfind works on both mainline and
+         ;; oxcaml, so one definition serves both).  We build the core lib plus
+         ;; the fmt.tty sub-library (consumers such as bos need it).  fmt.cli
+         ;; (cmdliner) and fmt.top remain dormant META stanzas -- add the same
+         ;; way if a consumer needs them.
          (replace 'build
            (lambda _
              (with-directory-excursion "src"
@@ -3578,13 +3630,54 @@ most of the POSIX and GNU conventions.")
                (invoke "ocamlfind" "ocamlc" "-a" "-o" "fmt.cma" "fmt.cmo")
                (invoke "ocamlfind" "ocamlopt" "-a" "-o" "fmt.cmxa" "fmt.cmx")
                (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
-                       "-o" "fmt.cmxs" "fmt.cmxa"))))
+                       "-o" "fmt.cmxs" "fmt.cmxa")
+               ;; fmt.tty: single module Fmt_tty, requires unix + fmt.
+               ;; `-I tty' so the .ml compile finds fmt_tty.cmi (built into
+               ;; tty/ from the .mli); `-I .' finds fmt.cmi.
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "unix"
+                       "-I" "." "-I" "tty" "tty/fmt_tty.mli")
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "unix"
+                       "-I" "." "-I" "tty" "tty/fmt_tty.ml")
+               (invoke "ocamlfind" "ocamlopt" "-c" "-package" "unix"
+                       "-I" "." "-I" "tty" "tty/fmt_tty.ml")
+               (invoke "ocamlfind" "ocamlc" "-a" "-o" "tty/fmt_tty.cma"
+                       "tty/fmt_tty.cmo")
+               (invoke "ocamlfind" "ocamlopt" "-a" "-o" "tty/fmt_tty.cmxa"
+                       "tty/fmt_tty.cmx")
+               (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
+                       "-o" "tty/fmt_tty.cmxs" "tty/fmt_tty.cmxa")
+               ;; fmt.cli: single module Fmt_cli, requires cmdliner + fmt.
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "cmdliner"
+                       "-I" "." "-I" "cli" "cli/fmt_cli.mli")
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "cmdliner"
+                       "-I" "." "-I" "cli" "cli/fmt_cli.ml")
+               (invoke "ocamlfind" "ocamlopt" "-c" "-package" "cmdliner"
+                       "-I" "." "-I" "cli" "cli/fmt_cli.ml")
+               (invoke "ocamlfind" "ocamlc" "-a" "-o" "cli/fmt_cli.cma"
+                       "cli/fmt_cli.cmo")
+               (invoke "ocamlfind" "ocamlopt" "-a" "-o" "cli/fmt_cli.cmxa"
+                       "cli/fmt_cli.cmx")
+               (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
+                       "-o" "cli/fmt_cli.cmxs" "cli/fmt_cli.cmxa"))))
          (replace 'install
            (lambda _
+             ;; The sub-package META stanzas use `directory = "tty"' etc.; we
+             ;; install the archives flat into the package dir, so drop those
+             ;; lines and let findlib resolve the bare archive names.
+             (substitute* "pkg/META"
+               (("directory = .*") ""))
              (with-directory-excursion "src"
                (invoke "ocamlfind" "install" "fmt" "../pkg/META"
                        "fmt.cma" "fmt.cmxa" "fmt.cmxs" "fmt.a"
-                       "fmt.cmi" "fmt.cmx" "fmt.mli")))))))
+                       "fmt.cmi" "fmt.cmx" "fmt.mli"
+                       "tty/fmt_tty.cma" "tty/fmt_tty.cmxa" "tty/fmt_tty.cmxs"
+                       "tty/fmt_tty.a" "tty/fmt_tty.cmi" "tty/fmt_tty.cmx"
+                       "tty/fmt_tty.mli"
+                       "cli/fmt_cli.cma" "cli/fmt_cli.cmxa" "cli/fmt_cli.cmxs"
+                       "cli/fmt_cli.a" "cli/fmt_cli.cmi" "cli/fmt_cli.cmx"
+                       "cli/fmt_cli.mli")))))))
+    ;; fmt.cli requires cmdliner; propagate so consumers resolve it.
+    (propagated-inputs (list ocaml-cmdliner))
     (home-page "https://erratique.ch/software/fmt")
     (synopsis "OCaml Format pretty-printer combinators")
     (description "Fmt exposes combinators to devise Format pretty-printing
@@ -5121,9 +5214,11 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         ;; Build the core Logs module directly with ocamlfind (topkg/ocamlbuild
-         ;; broken under oxcaml).  The logs.fmt/cli/lwt/threaded/top sublibs are
-         ;; left as dormant META stanzas; build them if a consumer needs them.
+         ;; Build the Logs modules directly with ocamlfind (topkg/ocamlbuild is
+         ;; broken under oxcaml; plain ocamlfind works on both).  Core Logs plus
+         ;; the logs.fmt sub-library (consumers such as bos need it).  The
+         ;; cli/lwt/threaded/top sublibs remain dormant META stanzas -- add the
+         ;; same way if a consumer needs them.
          (replace 'build
            (lambda _
              (with-directory-excursion "src"
@@ -5133,13 +5228,76 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
                (invoke "ocamlfind" "ocamlc" "-a" "-o" "logs.cma" "logs.cmo")
                (invoke "ocamlfind" "ocamlopt" "-a" "-o" "logs.cmxa" "logs.cmx")
                (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
-                       "-o" "logs.cmxs" "logs.cmxa"))))
+                       "-o" "logs.cmxs" "logs.cmxa")
+               ;; logs.fmt: single module Logs_fmt in src/fmt/ (0.9.0 moved the
+               ;; sub-libs into subdirs).  Requires logs + fmt.  `-I fmt' so the
+               ;; .ml compile finds logs_fmt.cmi; `-I .' finds logs.cmi.
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "fmt"
+                       "-I" "." "-I" "fmt" "fmt/logs_fmt.mli")
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "fmt"
+                       "-I" "." "-I" "fmt" "fmt/logs_fmt.ml")
+               (invoke "ocamlfind" "ocamlopt" "-c" "-package" "fmt"
+                       "-I" "." "-I" "fmt" "fmt/logs_fmt.ml")
+               (invoke "ocamlfind" "ocamlc" "-a" "-o" "fmt/logs_fmt.cma"
+                       "fmt/logs_fmt.cmo")
+               (invoke "ocamlfind" "ocamlopt" "-a" "-o" "fmt/logs_fmt.cmxa"
+                       "fmt/logs_fmt.cmx")
+               (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
+                       "-o" "fmt/logs_fmt.cmxs" "fmt/logs_fmt.cmxa")
+               ;; logs.cli: src/cli/logs_cli, requires logs + cmdliner.
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "cmdliner"
+                       "-I" "." "-I" "cli" "cli/logs_cli.mli")
+               (invoke "ocamlfind" "ocamlc" "-c" "-package" "cmdliner"
+                       "-I" "." "-I" "cli" "cli/logs_cli.ml")
+               (invoke "ocamlfind" "ocamlopt" "-c" "-package" "cmdliner"
+                       "-I" "." "-I" "cli" "cli/logs_cli.ml")
+               (invoke "ocamlfind" "ocamlc" "-a" "-o" "cli/logs_cli.cma"
+                       "cli/logs_cli.cmo")
+               (invoke "ocamlfind" "ocamlopt" "-a" "-o" "cli/logs_cli.cmxa"
+                       "cli/logs_cli.cmx")
+               (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
+                       "-o" "cli/logs_cli.cmxs" "cli/logs_cli.cmxa")
+               ;; logs.threaded: src/threaded/logs_threaded, requires logs +
+               ;; threads.posix.
+               (invoke "ocamlfind" "ocamlc" "-c" "-thread" "-package"
+                       "threads.posix" "-I" "." "-I" "threaded"
+                       "threaded/logs_threaded.mli")
+               (invoke "ocamlfind" "ocamlc" "-c" "-thread" "-package"
+                       "threads.posix" "-I" "." "-I" "threaded"
+                       "threaded/logs_threaded.ml")
+               (invoke "ocamlfind" "ocamlopt" "-c" "-thread" "-package"
+                       "threads.posix" "-I" "." "-I" "threaded"
+                       "threaded/logs_threaded.ml")
+               (invoke "ocamlfind" "ocamlc" "-a" "-o" "threaded/logs_threaded.cma"
+                       "threaded/logs_threaded.cmo")
+               (invoke "ocamlfind" "ocamlopt" "-a" "-o"
+                       "threaded/logs_threaded.cmxa" "threaded/logs_threaded.cmx")
+               (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
+                       "-o" "threaded/logs_threaded.cmxs"
+                       "threaded/logs_threaded.cmxa"))))
          (replace 'install
            (lambda _
+             ;; 0.9.0's META uses `directory = "fmt"' for the sub-packages; we
+             ;; install flat, so drop those lines (as for fmt).
+             (substitute* "pkg/META"
+               (("directory = .*") ""))
              (with-directory-excursion "src"
                (invoke "ocamlfind" "install" "logs" "../pkg/META"
                        "logs.cma" "logs.cmxa" "logs.cmxs" "logs.a"
-                       "logs.cmi" "logs.cmx" "logs.mli")))))))
+                       "logs.cmi" "logs.cmx" "logs.mli"
+                       "fmt/logs_fmt.cma" "fmt/logs_fmt.cmxa"
+                       "fmt/logs_fmt.cmxs" "fmt/logs_fmt.a"
+                       "fmt/logs_fmt.cmi" "fmt/logs_fmt.cmx"
+                       "fmt/logs_fmt.mli"
+                       "cli/logs_cli.cma" "cli/logs_cli.cmxa"
+                       "cli/logs_cli.cmxs" "cli/logs_cli.a"
+                       "cli/logs_cli.cmi" "cli/logs_cli.cmx" "cli/logs_cli.mli"
+                       "threaded/logs_threaded.cma" "threaded/logs_threaded.cmxa"
+                       "threaded/logs_threaded.cmxs" "threaded/logs_threaded.a"
+                       "threaded/logs_threaded.cmi" "threaded/logs_threaded.cmx"
+                       "threaded/logs_threaded.mli")))))))
+    ;; logs.fmt/cli require fmt/cmdliner; propagate so consumers resolve them.
+    (propagated-inputs (list ocaml-fmt ocaml-cmdliner))
     (home-page "https://erratique.ch/software/logs")
     (synopsis "Logging infrastructure for OCaml")
     (description "Logs provides a logging infrastructure for OCaml.  Logging is
@@ -7222,6 +7380,10 @@ string values and to directly encode characters in OCaml Buffer.t values.")
      `(("ocamlbuild" ,ocamlbuild)
        ("opam-installer" ,opam-installer)
        ("topkg" ,ocaml-topkg)
+       ;; The `--tests true' topkg build compiles uunf's uunftrip/examples,
+       ;; which use cmdliner; without it the build fails "Package cmdliner
+       ;; not found".
+       ("cmdliner" ,ocaml-cmdliner)
        ;; Test data is otherwise downloaded with curl
        ("NormalizationTest.txt"
         ,(origin
@@ -7664,9 +7826,11 @@ epoch.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         ;; Build the core Ptime module directly with ocamlfind (topkg/ocamlbuild
-         ;; broken under oxcaml).  The ptime.clock sublib (C stub) and ptime.top
-         ;; are dormant META stanzas; build them if a consumer needs them.
+         ;; Build the Ptime modules directly with ocamlfind (topkg/ocamlbuild
+         ;; broken under oxcaml; plain ocamlfind works on both).  Core Ptime
+         ;; plus ptime.clock (the C-stub POSIX wall-clock in src/clock/).
+         ;; ptime.clock.os is a deprecated alias that resolves for free once
+         ;; ptime.clock exists.  ptime.top stays a dormant META stanza.
          (replace 'build
            (lambda _
              (with-directory-excursion "src"
@@ -7676,13 +7840,38 @@ epoch.")
                (invoke "ocamlfind" "ocamlc" "-a" "-o" "ptime.cma" "ptime.cmo")
                (invoke "ocamlfind" "ocamlopt" "-a" "-o" "ptime.cmxa" "ptime.cmx")
                (invoke "ocamlfind" "ocamlopt" "-shared" "-linkall"
-                       "-o" "ptime.cmxs" "ptime.cmxa"))))
+                       "-o" "ptime.cmxs" "ptime.cmxa")
+               ;; ptime.clock: C stub + single module Ptime_clock, requires
+               ;; ptime.  exists_if checks cma+cmxa only, so cmxs is skipped.
+               (invoke "ocamlfind" "ocamlc" "-c" "clock/ptime_clock_stubs.c")
+               (invoke "ocamlfind" "ocamlc" "-c" "-I" "." "-I" "clock"
+                       "clock/ptime_clock.mli")
+               (invoke "ocamlfind" "ocamlc" "-c" "-I" "." "-I" "clock"
+                       "clock/ptime_clock.ml")
+               (invoke "ocamlfind" "ocamlopt" "-c" "-I" "." "-I" "clock"
+                       "clock/ptime_clock.ml")
+               (invoke "ocamlmklib" "-o" "clock/ptime_clock_stubs"
+                       "ptime_clock_stubs.o")
+               (invoke "ocamlfind" "ocamlc" "-a" "-o" "clock/ptime_clock.cma"
+                       "clock/ptime_clock.cmo"
+                       "-dllib" "-lptime_clock_stubs"
+                       "-cclib" "-lptime_clock_stubs")
+               (invoke "ocamlfind" "ocamlopt" "-a" "-o" "clock/ptime_clock.cmxa"
+                       "clock/ptime_clock.cmx" "-cclib" "-lptime_clock_stubs"))))
          (replace 'install
            (lambda _
+             ;; Drop the `directory = "clock"' line; we install flat.
+             (substitute* "pkg/META"
+               (("directory = .*") ""))
              (with-directory-excursion "src"
                (invoke "ocamlfind" "install" "ptime" "../pkg/META"
                        "ptime.cma" "ptime.cmxa" "ptime.cmxs" "ptime.a"
-                       "ptime.cmi" "ptime.cmx" "ptime.mli")))))))
+                       "ptime.cmi" "ptime.cmx" "ptime.mli"
+                       "clock/ptime_clock.cma" "clock/ptime_clock.cmxa"
+                       "clock/ptime_clock.a" "clock/ptime_clock.cmi"
+                       "clock/ptime_clock.cmx" "clock/ptime_clock.mli"
+                       "clock/libptime_clock_stubs.a"
+                       "clock/dllptime_clock_stubs.so")))))))
     (home-page "https://erratique.ch/software/ptime")
     (synopsis "POSIX time for OCaml")
     (description
@@ -12501,6 +12690,7 @@ representations can be extracted.")
            ocaml-findlib
            ocamlbuild
            ocaml-topkg
+           ocaml-cmdliner            ;test/ucharinfo.ml uses cmdliner
            ocaml-uucd
            ocaml-uunf
            ocaml-uutf))

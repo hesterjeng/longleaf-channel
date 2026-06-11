@@ -246,16 +246,21 @@ The platform includes tacaml for TA-Lib technical analysis bindings.")
 (define-public massive-relay
 (package
  (name "massive-relay")
- (version "master")
+ ;; No upstream releases/tags: pin to an explicit commit (the real version)
+ ;; and use the short SHA as the cosmetic version string. Bump both together
+ ;; -- recompute the hash with `guix hash -rx' on a clean checkout -- when
+ ;; cutting a new build. (Was a floating `commit "master"', whose recorded
+ ;; hash had drifted and no longer matched master's tip.)
+ (version "d9febcf")
  (source
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/hesterjeng/massive-relay.git")
-          (commit "master")))
+          (commit "d9febcf992157826a73b40beba51f74c9f7db0ff")))
     (file-name (git-file-name name version))
     (sha256
-     (base32 "0j97dkasb7ijhcylhrq7072pd1vkqmlsfhclvjfa2rcchdbiqifl"))))
+     (base32 "1jbipdyms4jh6psr2s7z8m697a0c3snl3fax483n4qa0wx8wkh2a"))))
  (build-system dune-build-system)
  (arguments
   '(#:tests? #f))
@@ -276,6 +281,9 @@ The platform includes tacaml for TA-Lib technical analysis bindings.")
    ocaml-cmdliner
    ocaml-ppx-deriving
    ocaml-ppx-yojson-conv
+   ;; dune files `-open Ppx_yojson_conv_lib.Yojson_conv.Primitives'; list
+   ;; the runtime lib explicitly rather than relying on ppx propagation.
+   ocaml-ppx-yojson-conv-lib
    ))
  (home-page "https://github.com/hesterjeng/massive-relay")
  (synopsis "WebSocket relay for sharing Massive API connections")

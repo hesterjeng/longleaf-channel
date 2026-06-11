@@ -73,7 +73,26 @@
                     (lambda _
                       (substitute* "src/findlib/topfind.ml.in"
                         (("prerr_endline else ignore")
-                         "(fun s -> prerr_endline s) else ignore")))))))))))
+                         "(fun s -> prerr_endline s) else ignore"))))
+                  ;; Stock OCaml ships `seq' ambiently (it is an empty compat
+                  ;; META -- the Seq module lives in stdlib).  oxcaml's build
+                  ;; doesn't, so libs that write `(libraries seq)' without
+                  ;; depending on ocaml-seq (psq, base64, ...) fail to resolve
+                  ;; the findlib name.  Install the shim into findlib's own
+                  ;; site-lib so every oxcaml build sees it -- inline META, not
+                  ;; a package dep, so no oxcaml-seq <- oxcaml-findlib cycle.
+                  (add-after 'install 'oxcaml-seq-shim
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((dir (string-append
+                                  (assoc-ref outputs "out")
+                                  "/lib/ocaml/site-lib/seq")))
+                        (mkdir-p dir)
+                        (call-with-output-file (string-append dir "/META")
+                          (lambda (port)
+                            (display "name=\"seq\"
+version=\"[distributed with ocaml]\"
+description=\"dummy package for compatibility\"
+requires=\"\"" port)))))))))))))
 
 ;; --- oxcaml policy for the generic #:extra-transform hook -------------------
 ;; Test runners pulled in as native-inputs are RUN, never linked into a
