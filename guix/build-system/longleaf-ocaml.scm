@@ -34,6 +34,8 @@
             strip-ocaml4.09-variant
             package-with-ocaml5.0
             strip-ocaml5.0-variant
+            package-with-ocaml-flambda
+            strip-flambda-variant
             package-with-explicit-ocaml
             default-findlib
             default-ocaml
@@ -210,6 +212,35 @@ pre-defined variants."
   (package
     (inherit p)
     (properties (alist-delete 'ocaml5.0-variant (package-properties p)))))
+
+;; Rewrite an OCaml/dune package (and its OCaml input closure, transitively) to
+;; build against the Flambda compiler.  Same source, same version -- only the
+;; compiler differs, so the variant is renamed `ocaml-' -> `ocaml-flambda-' to
+;; coexist with the default toolchain in the store.  Both findlib and dune must
+;; be the Flambda variants, not the stock ones: each ships a NATIVE library that
+;; packages link against -- findlib.cmxa, and dune-configurator (which `dune'
+;; propagates) -- and a stock .cmxa linked under the Flambda compiler gives
+;; ".cmxa is not a compilation unit description".  ocaml-flambda-findlib and
+;; ocaml-flambda-dune (plus their flambda-variant properties on findlib / dune /
+;; dune-configurator / csexp) keep the whole build-tooling chain Flambda.
+;; If a package miscompiles under Flambda, attach a 'flambda-variant property (a
+;; promise of a package) to pin a hand-tuned variant -- the rewriter will use it
+;; instead of transforming.
+(define package-with-ocaml-flambda
+  (package-with-explicit-ocaml (delay (@* (gnu packages longleaf-ocaml)
+                                          ocaml-5.4-flambda))
+                               (delay (@* (gnu packages longleaf-ocaml)
+                                          ocaml-flambda-findlib))
+                               (delay (@* (gnu packages longleaf-ocaml)
+                                          ocaml-flambda-dune))
+                               "ocaml-" "ocaml-flambda-"
+                               #:variant-property 'flambda-variant))
+
+(define (strip-flambda-variant p)
+  "Remove the 'flambda-variant' property from P."
+  (package
+    (inherit p)
+    (properties (alist-delete 'flambda-variant (package-properties p)))))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

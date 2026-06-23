@@ -323,6 +323,23 @@ functional, imperative and object-oriented styles of programming.")
                (base32
                 "0bpfwdfc7j53hb57arb6nxdj0ahkcxzkbj2ax90nvkjcyr96xcr3"))))))
 
+;; Same 5.4.1 source as `ocaml-5.4', built with the Flambda optimiser
+;; (`--enable-flambda').  Unlike the `oxcaml' fork above, plain Flambda is just
+;; a configure flag on the stock compiler -- no source patches, no menhir/llvm
+;; pins.  Native code (.cmx) is NOT compatible between Flambda and non-Flambda
+;; compilers, so a Flambda profile must rebuild its whole OCaml closure against
+;; this compiler -- see `package-with-ocaml-flambda' in the build-system module,
+;; which does that rewrite automatically.  Hidden: it is an implementation
+;; detail selected via the rewriter, not installed directly.
+(define-public ocaml-5.4-flambda
+  (package
+    (inherit ocaml-5.4)
+    (properties '((hidden? . #t)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments ocaml-5.4)
+       ((#:configure-flags flags ''())
+        `(cons "--enable-flambda" ,flags))))))
+
 (define-public oxcaml
   (package
     (name "oxcaml")
@@ -2346,6 +2363,7 @@ dependency information about multiple packages.  There is also a tool that
 allows the user to enter queries on the command-line.  In order to simplify
 compilation and linkage, there are new frontends of the various OCaml
 compilers that can directly deal with packages.")
+    (properties `((flambda-variant . ,(delay ocaml-flambda-findlib))))
     (license license:x11)))
 
 (define-public ocaml4.07-findlib
@@ -2368,6 +2386,20 @@ compilers that can directly deal with packages.")
     (name "ocaml5.0-findlib")
     (native-inputs
      (list m4 ocaml-5.0))))
+
+;; Flambda findlib: stock findlib ships findlib.cmxa, a NATIVE library that
+;; packages (e.g. ocp-indent's dynamic loader) link against -- linking a stock
+;; (non-Flambda) findlib.cmxa under the Flambda compiler gives ".cmxa is not a
+;; compilation unit description".  So findlib too must be Flambda-built; passed
+;; as the findlib argument to `package-with-ocaml-flambda' and registered as the
+;; flambda-variant of ocaml-findlib (above) for explicit-input cases.
+(define-public ocaml-flambda-findlib
+  (package
+    (inherit ocaml-findlib)
+    (name "ocaml-flambda-findlib")
+    (native-inputs
+     (list m4 ocaml-5.4-flambda))
+    (properties '())))
 
 (define-public ocaml-ounit2
   (package
@@ -2726,7 +2758,8 @@ Descriptions of projects, libraries and executables are provided in
     (propagated-inputs
      (list ocaml-csexp))
     (properties `((ocaml4.09-variant . ,(delay ocaml4.09-dune-configurator))
-                  (ocaml5.0-variant . ,(delay ocaml5.0-dune-configurator))))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-dune-configurator))
+                  (flambda-variant . ,(delay ocaml-flambda-dune-configurator))))
     (synopsis "Dune helper library for gathering system configuration")
     (description "Dune-configurator is a small library that helps writing
 OCaml scripts that test features available on the system, in order to generate
@@ -2769,7 +2802,8 @@ config.h files for instance.  Among other things, dune-configurator allows one t
      (list dune-configurator))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-dune))
                   (ocaml4.09-variant . ,(delay ocaml4.09-dune))
-                  (ocaml5.0-variant . ,(delay ocaml5.0-dune))))))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-dune))
+                  (flambda-variant . ,(delay ocaml-flambda-dune))))))
 
 (define-public ocaml4.09-dune
   (package
@@ -2943,7 +2977,8 @@ executables and libraries")))
     ;; (propagated-inputs
     ;;  (list ocaml-result))
     (properties `((ocaml4.09-variant . ,(delay ocaml4.09-csexp))
-                  (ocaml5.0-variant . ,(delay ocaml5.0-csexp))))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-csexp))
+                  (flambda-variant . ,(delay ocaml-flambda-csexp))))
     (home-page "https://github.com/ocaml-dune/csexp")
     (synopsis "Parsing and printing of S-expressions in Canonical form")
     (description "This library provides minimal support for Canonical
@@ -2985,6 +3020,44 @@ module of this library is parameterised by the type of S-expressions.")
     ;; (propagated-inputs
     ;;  `(("ocaml-result" ,ocaml5.0-result)))
     ))
+
+;; Flambda toolchain dune chain, mirroring the ocaml5.0-* chain above.  The
+;; `dune' package propagates `dune-configurator', a LIBRARY that discover/
+;; configurator scripts compile against; under the Flambda compiler that library
+;; must itself be Flambda-built (.cmx are not interchangeable).  These are
+;; registered as `flambda-variant' properties on dune/dune-configurator/csexp
+;; (above) and passed as the dune argument to `package-with-ocaml-flambda', so
+;; the whole build-tooling chain stays Flambda.  Bootstrap dune uses
+;; ocaml-build-system (no dune needed), breaking the chicken-and-egg.
+(define-public ocaml-flambda-dune-bootstrap
+  (package-with-ocaml-flambda dune-bootstrap))
+
+(define-public ocaml-flambda-csexp
+  (package
+    (inherit ocaml-csexp)
+    (name "ocaml-flambda-csexp")
+    (arguments
+     `(#:ocaml ,ocaml-5.4-flambda
+       #:findlib ,ocaml-findlib
+       ,@(substitute-keyword-arguments (package-arguments ocaml-csexp)
+           ((#:dune _) ocaml-flambda-dune-bootstrap))))))
+
+(define-public ocaml-flambda-dune-configurator
+  (package
+    (inherit dune-configurator)
+    (name "ocaml-flambda-dune-configurator")
+    (arguments
+     `(,@(package-arguments dune-configurator)
+       #:dune ,ocaml-flambda-dune-bootstrap
+       #:ocaml ,ocaml-5.4-flambda
+       #:findlib ,ocaml-findlib))
+    (propagated-inputs (list ocaml-flambda-csexp))))
+
+(define-public ocaml-flambda-dune
+  (package
+    (inherit ocaml-flambda-dune-bootstrap)
+    (propagated-inputs
+     (list ocaml-flambda-dune-configurator))))
 
 (define-public ocaml4.14-migrate-parsetree
   (package
