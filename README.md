@@ -1,0 +1,1 @@
+This is a channel for Guix that allows me to specify custom package definitions for my tools.
