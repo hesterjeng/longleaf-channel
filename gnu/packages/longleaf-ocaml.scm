@@ -13489,7 +13489,7 @@ browsers and Node.js.")
          (delete 'configure)
          (replace 'build
            (lambda _
-             (invoke "./build.sh")))
+             (invoke "sh" "build.sh")))
          ;; XXX: The tests are already run in the build.sh script.
          (delete 'check))))
     (native-inputs (list opam-installer))
