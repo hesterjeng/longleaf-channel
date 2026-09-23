@@ -19,7 +19,7 @@
 (define-public claude-code
   (package
     (name "claude-code")
-    (version "2.1.158")
+    (version "2.1.267")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -29,7 +29,7 @@
               (file-name (string-append "claude-" version "-linux-x64"))
               (sha256
                (base32
-                "1gkz05k6hynmapg4svbqw2dby17n7z42wrb2ayn0nw22rn5009yx"))))
+                "1h03jhw5v3s6fl3nnal4nv25ml1hyfs80gcjxx35j7apzy9wg683"))))
     (build-system copy-build-system)
     (arguments
      (list
