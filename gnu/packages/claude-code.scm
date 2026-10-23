@@ -28,8 +28,8 @@
                     "claude-code-releases/" version "/linux-x64/claude"))
               (file-name (string-append "claude-" version "-linux-x64"))
               (sha256
-               (base32
-                "1qfwlvpbaczjjpkjv77va1bxbsizvgfrk4kygnr5yijqhjl3vzjn"))))
+               (base32 "0n5nk7yay821fswar3yx79sly6vww654j3q0lgzql0xyxj54lw2d"
+))))
     (build-system copy-build-system)
     (arguments
      (list
